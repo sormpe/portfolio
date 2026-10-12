@@ -1,2 +1,5 @@
+# Crawling is allowed on purpose: every page carries <meta name="robots" content="noindex">,
+# and crawlers must be able to fetch a page to see that tag. Blocking them here would let
+# search engines index bare URLs found via links, and would break LinkedIn link previews.
 User-agent: *
-Disallow: /
+Allow: /
