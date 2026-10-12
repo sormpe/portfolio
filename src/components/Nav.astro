@@ -1,0 +1,301 @@
+---
+import { site } from '../data/site';
+
+const links = [
+	{ href: '#work',       label: 'Work' },
+	{ href: '#experience', label: 'Experience' },
+	{ href: '#about',      label: 'About' },
+	{ href: '#contact',    label: 'Contact' },
+];
+---
+
+<header class="site-nav">
+	<div class="site-nav__inner">
+		<a href="#top" class="site-nav__name">{site.name}</a>
+
+		<nav class="site-nav__nav" aria-label="Page sections">
+			<button
+				class="menu-btn"
+				id="menu-btn"
+				type="button"
+				aria-expanded="false"
+				aria-controls="nav-menu"
+			>
+				<span>Menu</span>
+				<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<polyline points="6 9 12 15 18 9"/>
+				</svg>
+			</button>
+			<ul class="site-nav__links" id="nav-menu">
+				{links.map(({ href, label }) => (
+					<li>
+						<a href={href} class="nav-link" data-section={href.slice(1)}>
+							{label}
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+
+		<button class="theme-btn" id="theme-btn" aria-label="Switch to dark theme" type="button">
+			<svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="12" cy="12" r="5"/>
+				<line x1="12" y1="1" x2="12" y2="3"/>
+				<line x1="12" y1="21" x2="12" y2="23"/>
+				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+				<line x1="1" y1="12" x2="3" y2="12"/>
+				<line x1="21" y1="12" x2="23" y2="12"/>
+				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+			</svg>
+			<svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+			</svg>
+		</button>
+	</div>
+</header>
+
+<script is:inline>
+	(function () {
+		var root = document.documentElement;
+		var themeBtn = document.getElementById('theme-btn');
+		var menuBtn = document.getElementById('menu-btn');
+		var header = document.querySelector('.site-nav');
+		if (!themeBtn || !menuBtn || !header) return;
+
+		// Theme switching
+		function syncTheme() {
+			var isDark = root.getAttribute('data-theme') === 'dark';
+			themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+		}
+		syncTheme();
+
+		themeBtn.addEventListener('click', function () {
+			var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+			root.setAttribute('data-theme', next);
+			try { localStorage.setItem('theme', next); } catch (e) {}
+			syncTheme();
+		});
+
+		// Mobile menu
+		function setOpen(open) {
+			menuBtn.setAttribute('aria-expanded', String(open));
+			header.toggleAttribute('data-open', open);
+		}
+
+		menuBtn.addEventListener('click', function () {
+			setOpen(menuBtn.getAttribute('aria-expanded') !== 'true');
+		});
+
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && header.hasAttribute('data-open')) {
+				setOpen(false);
+				menuBtn.focus();
+			}
+		});
+
+		document.addEventListener('click', function (e) {
+			if (header.hasAttribute('data-open') && !header.contains(e.target)) setOpen(false);
+		});
+
+		// Active section tracking
+		var navLinks = document.querySelectorAll('.nav-link');
+
+		navLinks.forEach(function (l) {
+			l.addEventListener('click', function () { setOpen(false); });
+		});
+
+		function setActive(id) {
+			navLinks.forEach(function (l) {
+				var active = l.dataset.section === id;
+				l.classList.toggle('active', active);
+				if (active) l.setAttribute('aria-current', 'location');
+				else l.removeAttribute('aria-current');
+			});
+		}
+
+		function atPageEnd() {
+			return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+		}
+
+		var observer = new IntersectionObserver(function (entries) {
+			if (atPageEnd()) return;
+			entries.forEach(function (entry) {
+				if (entry.isIntersecting) setActive(entry.target.id);
+			});
+		}, { rootMargin: '-20% 0px -75% 0px' });
+
+		// The last section is too short to reach the observer band, so mark it at the bottom.
+		window.addEventListener('scroll', function () {
+			if (atPageEnd()) setActive('contact');
+		}, { passive: true });
+
+		// This script runs before <main> is parsed, so observe once the DOM is ready.
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('section[id]').forEach(function (s) {
+				observer.observe(s);
+			});
+		});
+	})();
+</script>
+
+<style>
+	.site-nav {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: var(--z-overlay);
+		height: var(--nav-height);
+		border-bottom: 1px solid var(--line);
+		background: color-mix(in srgb, var(--bg) 88%, transparent);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+
+	.site-nav__inner {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: min(calc(100% - 2rem), var(--content-width));
+		margin: 0 auto;
+		gap: 1rem;
+	}
+
+	.site-nav__name {
+		flex-shrink: 0;
+		margin-right: auto;
+		font-size: 0.98rem;
+		font-weight: 800;
+		color: var(--text);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.site-nav__links {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.nav-link {
+		display: block;
+		padding: 0.5rem 0.85rem;
+		border-radius: 999px;
+		font-size: 0.92rem;
+		font-weight: 600;
+		color: var(--muted);
+		text-decoration: none;
+		white-space: nowrap;
+		transition: color var(--transition-base), background var(--transition-base);
+	}
+
+	.nav-link:hover {
+		color: var(--text);
+		background: var(--bg-alt);
+	}
+
+	.nav-link.active {
+		color: var(--accent);
+		background: var(--accent-soft);
+	}
+
+	.menu-btn {
+		display: none;
+	}
+
+	.theme-btn,
+	.menu-btn {
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		height: 2.5rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 999px;
+		background: var(--surface);
+		color: var(--text);
+		font: inherit;
+		cursor: pointer;
+		transition: background var(--transition-base), border-color var(--transition-base);
+	}
+
+	.theme-btn {
+		display: flex;
+		width: 2.5rem;
+		padding: 0;
+	}
+
+	.theme-btn:hover,
+	.menu-btn:hover {
+		background: var(--bg-alt);
+	}
+
+	.icon {
+		display: block;
+		flex-shrink: 0;
+	}
+
+	.icon-sun {
+		display: none;
+	}
+
+	:global([data-theme="dark"]) .icon-sun {
+		display: block;
+	}
+
+	:global([data-theme="dark"]) .icon-moon {
+		display: none;
+	}
+
+	@media (max-width: 720px) {
+		/* Without JS the links stay visible inline; with JS they collapse into a menu. */
+		:global(.js) .menu-btn {
+			display: inline-flex;
+			gap: 0.35rem;
+			padding: 0 0.9rem;
+			font-size: 0.9rem;
+			font-weight: 700;
+		}
+
+		.menu-btn .icon {
+			transition: transform var(--transition-base);
+		}
+
+		.menu-btn[aria-expanded="true"] .icon {
+			transform: rotate(180deg);
+		}
+
+		:global(.js) .site-nav__links {
+			display: none;
+			position: absolute;
+			top: calc(100% + 1px);
+			left: 0;
+			right: 0;
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.15rem;
+			padding: 0.5rem 1rem 1rem;
+			border-bottom: 1px solid var(--line);
+			background: var(--bg);
+			box-shadow: var(--shadow-strong);
+		}
+
+		.site-nav[data-open] .site-nav__links {
+			display: flex;
+		}
+
+		:global(.js) .nav-link {
+			padding: 0.8rem 1rem;
+			border-radius: var(--radius-md);
+			font-size: 1rem;
+		}
+
+		:global(html:not(.js)) .site-nav__name {
+			display: none;
+		}
+	}
+</style>

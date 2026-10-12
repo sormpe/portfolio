@@ -1,0 +1,111 @@
+---
+import {
+	siJavascript, siTypescript, siOpenjdk, siPython, siPhp,
+	siReact, siNextdotjs, siGatsby,
+	siNodedotjs, siExpress, siSpringboot, siGraphql,
+	siPostgresql, siMongodb, siElasticsearch,
+	siCypress, siVitest, siTestinglibrary,
+	siDocker, siRedhatopenshift, siAnsible, siSentry,
+	siClaude, siGithubcopilot,
+} from 'simple-icons';
+
+interface Props {
+	name: string;
+}
+
+const { name } = Astro.props;
+
+const iconMap: Record<string, { path: string; hex: string }> = {
+	'JavaScript':            siJavascript,
+	'TypeScript':            siTypescript,
+	'Java':                  siOpenjdk,
+	'Python':                siPython,
+	'PHP':                   siPhp,
+	'React':                 siReact,
+	'React Native':          siReact,
+	'Next.js':               siNextdotjs,
+	'Gatsby':                siGatsby,
+	'Node.js':               siNodedotjs,
+	'Express':               siExpress,
+	'Spring Boot':           siSpringboot,
+	'GraphQL':               siGraphql,
+	'PostgreSQL':            siPostgresql,
+	'MongoDB':               siMongodb,
+	'ElasticSearch':         siElasticsearch,
+	'Cypress':               siCypress,
+	'Vitest':                siVitest,
+	'React Testing Library': siTestinglibrary,
+	'Docker':                siDocker,
+	'OpenShift':             siRedhatopenshift,
+	'Ansible':               siAnsible,
+	'Sentry':                siSentry,
+	'Claude Code':           siClaude,
+	'GitHub Copilot':        siGithubcopilot,
+};
+
+function hexToHsl(hex: string): [number, number, number] {
+	const r = parseInt(hex.slice(0, 2), 16) / 255;
+	const g = parseInt(hex.slice(2, 4), 16) / 255;
+	const b = parseInt(hex.slice(4, 6), 16) / 255;
+	const max = Math.max(r, g, b), min = Math.min(r, g, b);
+	const l = (max + min) / 2;
+	if (max === min) return [0, 0, Math.round(l * 100)];
+	const d = max - min;
+	const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+	let h = 0;
+	switch (max) {
+		case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+		case g: h = ((b - r) / d + 2) / 6; break;
+		case b: h = ((r - g) / d + 4) / 6; break;
+	}
+	return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
+
+// Dark mode: boost anything below L=65% to L=68% so icons show clearly on dark bg
+function forDark(hex: string): string {
+	const [h, s, l] = hexToHsl(hex);
+	return l < 65 ? `hsl(${h}, ${Math.min(s + 15, 100)}%, 68%)` : `#${hex}`;
+}
+
+// Light mode: cap anything above L=50% to L=42% so icons show clearly on cream bg
+function forLight(hex: string): string {
+	const [h, s, l] = hexToHsl(hex);
+	return l > 50 ? `hsl(${h}, ${Math.max(s, 70)}%, 42%)` : `#${hex}`;
+}
+
+const icon = iconMap[name] ?? null;
+const colorLight = icon ? forLight(icon.hex) : null;
+const colorDark  = icon ? forDark(icon.hex)  : null;
+---
+
+<span class="skill-tag" style={icon ? `--cl: ${colorLight}; --cd: ${colorDark}` : ''}>
+	{icon && (
+		<svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+			<path d={icon.path} />
+		</svg>
+	)}
+	{name}
+</span>
+
+<style>
+	.skill-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.5rem 0.9rem;
+		border-radius: 999px;
+		border: 1px solid var(--line);
+		background: var(--surface);
+		font-size: 0.88rem;
+		font-weight: 600;
+	}
+
+	.icon {
+		flex-shrink: 0;
+		fill: var(--cl, currentColor);
+	}
+
+	:global([data-theme="dark"]) .icon {
+		fill: var(--cd, currentColor);
+	}
+</style>

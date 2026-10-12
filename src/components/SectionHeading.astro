@@ -1,0 +1,51 @@
+---
+interface Props {
+	kicker: string;
+	title: string;
+	description?: string;
+	center?: boolean;
+}
+
+const { kicker, title, description, center = false } = Astro.props;
+---
+
+<header class:list={['section-heading', { 'section-heading--center': center }]}>
+	<p class="u-eyebrow section-heading__kicker">{kicker}</p>
+	<h2>{title}</h2>
+	{description && <p class="section-heading__desc">{description}</p>}
+</header>
+
+<style>
+	.section-heading {
+		margin-bottom: clamp(1.8rem, 3vw, 2.6rem);
+	}
+
+	.section-heading__kicker {
+		margin-bottom: 0.6rem;
+	}
+
+	.section-heading--center {
+		text-align: center;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: clamp(1.85rem, 3.6vw, 2.6rem);
+		font-weight: 800;
+		line-height: 1.12;
+		letter-spacing: -0.02em;
+		text-wrap: balance;
+	}
+
+	.section-heading__desc {
+		margin: 0.75rem 0 0;
+		max-width: 56ch;
+		font-size: 1.05rem;
+		color: var(--muted);
+		line-height: 1.7;
+	}
+
+	.section-heading--center .section-heading__desc {
+		margin-inline: auto;
+	}
+</style>

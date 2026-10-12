@@ -1,11 +1,709 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Nav from '../components/Nav.astro';
+import SkillTag from '../components/SkillTag.astro';
+import { education, experience, highlights, projects, skills, site } from '../data/site';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={`${site.name} | ${site.title}`} description={site.description}>
+	<Nav />
+	<main class="page" id="main" tabindex="-1">
+		<section class="hero" id="top" aria-labelledby="hero-title">
+			<div class="hero__content">
+				<p class="hero__role">{site.title}</p>
+				<h1 id="hero-title">{site.name}</h1>
+				<p class="lede">{site.intro}</p>
+				<ul class="hero__meta">
+					<li>
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+							<circle cx="12" cy="10" r="3"/>
+						</svg>
+						{site.location}
+					</li>
+					<li>
+						<span class="status-dot" aria-hidden="true"></span>
+						{site.availabilityShort}
+					</li>
+				</ul>
+				<div class="hero__actions">
+					<a class="button button--primary" href="#work">Selected work</a>
+					<a class="button button--secondary" href="#contact">Contact</a>
+				</div>
+			</div>
+
+			<figure class="hero__portrait">
+				<img src="/profile.jpg" alt={`Portrait of ${site.name}`} width="1365" height="2048" />
+			</figure>
+
+			<ul class="highlights" aria-label="Highlights">
+				{highlights.map((item) => (
+					<li>
+						<strong>{item.label}</strong>
+						<span>{item.value}</span>
+					</li>
+				))}
+			</ul>
+		</section>
+
+		<section class="section" id="work">
+			<SectionHeading
+				kicker="Selected work"
+				title="What I've built"
+				description="Recent client, internal, and research projects. Client names are left out."
+			/>
+			<div class="work-list">
+				{projects.map((project) => (
+					<article class="work-item">
+						<header class="work-item__header">
+							<p class="work-item__category">{project.category}</p>
+							<h3>{project.name}</h3>
+							<p class="work-item__role">{project.role}</p>
+						</header>
+						<div class="work-item__body">
+							<p class="work-item__summary">{project.summary}</p>
+							<ul class="work-item__outcomes" aria-label="Outcomes">
+								{project.outcomes.map((outcome) => <li>{outcome}</li>)}
+							</ul>
+							<p class="work-item__stack">
+								<span class="visually-hidden">Technologies: </span>{project.stack.join(' · ')}
+							</p>
+						</div>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="section" id="experience">
+			<SectionHeading
+				kicker="Experience"
+				title="Where I've worked"
+				description="Ten years across a product company, a university, and consulting."
+			/>
+			<div class="timeline">
+				{experience.map((item) => <ProjectCard {...item} />)}
+			</div>
+		</section>
+
+		<section class="section about" id="about">
+			<SectionHeading
+				kicker="About"
+				title="Building and improving web software"
+			/>
+			<div class="about__copy">
+				<p>
+					I build and improve web applications, from new projects to products already in use. Working
+					across the stack, I contribute to technical decisions and carry features through
+					implementation, testing, and release. I consider how each change fits the larger product,
+					not just whether it works on its own.
+				</p>
+				<p>
+					Software is a team effort, so I work closely with product, design, and engineering, and have
+					also facilitated Scrum. AI tools are part of my workflow; I use them as support and remain
+					accountable for the code and the decisions behind it.
+				</p>
+			</div>
+		</section>
+
+		<section class="section" id="skills">
+			<SectionHeading
+				kicker="Skills"
+				title="What I build with"
+				description="Languages, frameworks, and tools used regularly in production."
+			/>
+			<div class="skill-groups">
+				{skills.map((group) => (
+					<div class="skill-group">
+						<h3 class="skill-group__label">{group.group}</h3>
+						<div class="tag-cloud">
+							{group.items.map((skill) => <SkillTag name={skill} />)}
+						</div>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="section" id="education">
+			<SectionHeading
+				kicker="Education"
+				title="Aalto University and beyond"
+				description="I studied computer science at Aalto, specialising in web technologies. I’m now studying mathematical sciences at the University of Helsinki, including mathematics, economics, econometrics, and social science."
+			/>
+			<div class="education-grid">
+				{education.map((entry) => (
+					<article class="education-card u-card">
+						<div class="education-card__header">
+							<p class="education-card__period">{entry.period}</p>
+							{entry.logo && (
+								<img class="education-card__logo" src={entry.logo} alt="" />
+							)}
+						</div>
+						<h3>{entry.school}</h3>
+						<p class="education-card__degree">{entry.degree}</p>
+						<p>{entry.focus}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="section contact" id="contact">
+			<SectionHeading
+				kicker="Contact"
+				title="Let's work together"
+				description="Reach out about consulting engagements, roles, or anything you're building."
+				center={true}
+			/>
+			<div class="contact-card u-card">
+				<div class="contact-card__actions">
+					<a class="button button--primary" href={`mailto:${site.email}`}>Email me</a>
+					<a class="button button--secondary" href={site.linkedin}>LinkedIn</a>
+					<a class="button button--secondary" href={site.github}>GitHub</a>
+				</div>
+				<dl class="contact-meta">
+					<div>
+						<dt>Email</dt>
+						<dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+					</div>
+					<div>
+						<dt>Based in</dt>
+						<dd>{site.location} · {site.timezone}</dd>
+					</div>
+					<div>
+						<dt>Availability</dt>
+						<dd>{site.availability}</dd>
+					</div>
+				</dl>
+			</div>
+		</section>
+	</main>
 </Layout>
+
+<style>
+	.page {
+		width: min(calc(100% - 2rem), var(--content-width));
+		margin: 0 auto;
+		padding: calc(var(--nav-height) + clamp(2rem, 5vw, 4rem)) 0 4rem;
+	}
+
+	.page:focus {
+		outline: none;
+	}
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	/* Hero */
+
+	.hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1.55fr) minmax(240px, 0.85fr);
+		grid-template-areas:
+			'content portrait'
+			'highlights highlights';
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: center;
+	}
+
+	.hero__content {
+		grid-area: content;
+	}
+
+	.hero__role {
+		margin: 0 0 0.75rem;
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--accent);
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(2.75rem, 7vw, 5.25rem);
+		font-weight: 800;
+		line-height: 0.98;
+		letter-spacing: -0.035em;
+	}
+
+	.lede {
+		max-width: 36rem;
+		margin: 1.5rem 0 0;
+		font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+		line-height: 1.6;
+		color: var(--muted);
+	}
+
+	.hero__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--text);
+	}
+
+	.hero__meta li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+	}
+
+	.hero__meta svg {
+		color: var(--muted);
+	}
+
+	.status-dot {
+		width: 0.55rem;
+		height: 0.55rem;
+		margin: 0 0.1rem;
+		border-radius: 50%;
+		background: #16a34a;
+		box-shadow: 0 0 0 3px color-mix(in srgb, #16a34a 22%, transparent);
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+
+	.hero__portrait {
+		grid-area: portrait;
+		margin: 0;
+	}
+
+	.hero__portrait img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		object-position: center 20%;
+		border-radius: var(--radius-xl);
+		background: var(--bg-alt);
+	}
+
+	.highlights {
+		grid-area: highlights;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1.5rem;
+		margin: 0;
+		padding: 1.75rem 0 0;
+		border-top: 1px solid var(--line);
+		list-style: none;
+	}
+
+	.highlights strong,
+	.highlights span {
+		display: block;
+	}
+
+	.highlights strong {
+		font-size: 1.05rem;
+		font-weight: 800;
+	}
+
+	.highlights span {
+		margin-top: 0.25rem;
+		color: var(--muted);
+		line-height: 1.5;
+	}
+
+	/* Buttons */
+
+	.button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.9rem;
+		padding: 0.75rem 1.35rem;
+		border-radius: 999px;
+		text-decoration: none;
+		font-weight: 700;
+		transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
+	}
+
+	.button--primary {
+		background: var(--text);
+		color: var(--bg);
+		border: 1px solid var(--text);
+	}
+
+	.button--primary:hover {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: #ffffff;
+	}
+
+	:global([data-theme="dark"]) .button--primary:hover {
+		color: var(--bg);
+	}
+
+	.button--secondary {
+		border: 1px solid var(--line-strong);
+		background: var(--surface);
+		color: var(--text);
+	}
+
+	.button--secondary:hover {
+		border-color: var(--text);
+	}
+
+	/* Sections */
+
+	.section {
+		padding-top: clamp(4rem, 9vw, 7rem);
+	}
+
+	/* Work */
+
+	.work-list {
+		border-top: 1px solid var(--line);
+	}
+
+	.work-item {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+		gap: 1rem clamp(2rem, 5vw, 4rem);
+		padding: 2rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.work-item__category {
+		margin: 0 0 0.5rem;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--accent);
+	}
+
+	.work-item h3 {
+		margin: 0;
+		font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+		font-weight: 800;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.work-item__role {
+		margin: 0.4rem 0 0;
+		font-weight: 600;
+		color: var(--muted);
+	}
+
+	.work-item__summary {
+		margin: 0;
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--text);
+	}
+
+	.work-item__outcomes {
+		display: grid;
+		gap: 0.4rem;
+		margin: 0.9rem 0 0;
+		padding-left: 1.1rem;
+		color: var(--muted);
+		line-height: 1.6;
+	}
+
+	.work-item__outcomes li::marker {
+		color: var(--accent);
+	}
+
+	.work-item__stack {
+		margin: 1rem 0 0;
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: var(--muted);
+	}
+
+	/* Experience */
+
+	.timeline {
+		--timeline-gutter: 2rem;
+		position: relative;
+		padding-left: var(--timeline-gutter);
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		top: 0.5rem;
+		bottom: 0.5rem;
+		left: 0;
+		width: 1px;
+		background: var(--line-strong);
+	}
+
+	/* About */
+
+	.about {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+		gap: 0 clamp(2rem, 5vw, 4rem);
+		align-items: start;
+	}
+
+	.about__copy {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	.about__copy p {
+		margin: 0;
+		font-size: 1.08rem;
+		color: var(--muted);
+		line-height: 1.8;
+	}
+
+	/* Skills */
+
+	.skill-groups {
+		border-top: 1px solid var(--line);
+	}
+
+	.skill-group {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+		gap: 0.75rem clamp(2rem, 5vw, 4rem);
+		align-items: center;
+		padding: 1.1rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.skill-group__label {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 700;
+	}
+
+	.tag-cloud {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	/* Education */
+
+	.education-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+		gap: 1rem;
+	}
+
+	.education-card {
+		padding: 1.5rem;
+	}
+
+	.education-card__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.6rem;
+	}
+
+	.education-card__logo {
+		height: 26px;
+		width: auto;
+		flex-shrink: 0;
+		opacity: 0.8;
+	}
+
+	:global([data-theme="dark"]) .education-card__logo {
+		filter: brightness(0) invert(1);
+	}
+
+	.education-card h3 {
+		margin: 0 0 0.5rem;
+		font-size: 1.2rem;
+		font-weight: 800;
+	}
+
+	.education-card p {
+		margin: 0;
+		color: var(--muted);
+		line-height: 1.65;
+	}
+
+	.education-card__period {
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--accent) !important;
+	}
+
+	.education-card .education-card__degree {
+		margin-bottom: 0.5rem;
+		font-weight: 700;
+		color: var(--text);
+	}
+
+	/* Contact */
+
+	.contact-card {
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		background: var(--bg-alt);
+		border-color: transparent;
+	}
+
+	.contact-card__actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.contact-meta {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1.5rem 3rem;
+		margin: 1.75rem 0 0;
+		padding-top: 1.75rem;
+		border-top: 1px solid var(--line-strong);
+		text-align: center;
+	}
+
+	dt {
+		font-size: 0.78rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--accent);
+	}
+
+	dd {
+		margin: 0.4rem 0 0;
+		overflow-wrap: anywhere;
+	}
+
+	/* Entrance animation (skipped entirely for reduced motion) */
+
+	@media (prefers-reduced-motion: no-preference) {
+		main > section {
+			animation: section-enter 0.6s ease-out both;
+		}
+
+		main > section:nth-of-type(2) {
+			animation-delay: 0.08s;
+		}
+
+		main > section:nth-of-type(n + 3) {
+			animation-delay: 0.14s;
+		}
+
+		@keyframes section-enter {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: none;
+			}
+		}
+	}
+
+	/* Responsive */
+
+	@media (max-width: 760px) {
+		.hero {
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-areas:
+				'portrait'
+				'content'
+				'highlights';
+			gap: 2rem;
+		}
+
+		.hero__portrait {
+			width: 7.5rem;
+		}
+
+		.hero__portrait img {
+			aspect-ratio: 1;
+			border-radius: 50%;
+		}
+
+		.highlights,
+		.work-item,
+		.about,
+		.skill-group {
+			grid-template-columns: 1fr;
+		}
+
+		.highlights {
+			gap: 1rem;
+		}
+
+		.work-item {
+			padding: 1.75rem 0;
+		}
+
+		.timeline {
+			--timeline-gutter: 1.5rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.button {
+			flex: 1 1 auto;
+		}
+
+		.contact-meta {
+			flex-direction: column;
+		}
+	}
+
+	@media print {
+		:global(.site-nav),
+		:global(.skip-link) {
+			display: none !important;
+		}
+
+		.page {
+			width: 100%;
+			padding: 0;
+		}
+
+		.hero__portrait {
+			display: none;
+		}
+
+		.hero {
+			grid-template-columns: 1fr;
+			grid-template-areas: 'content' 'highlights';
+		}
+
+		.work-item,
+		.education-card,
+		.contact-card {
+			break-inside: avoid;
+		}
+
+		.timeline::before {
+			display: none;
+		}
+
+		.button {
+			border: 1px solid #999;
+			color: #000;
+			background: #fff;
+		}
+	}
+</style>

@@ -1,0 +1,113 @@
+---
+interface Props {
+	company: string;
+	title: string;
+	period: string;
+	summary: string;
+	stack: string;
+	logo?: string | null;
+}
+
+const { company, title, period, summary, stack, logo } = Astro.props as Props;
+---
+
+<article class="timeline-item">
+	<header class="timeline-item__header">
+		<div>
+			<p class="timeline-item__period">{period}</p>
+			<h3>{company}</h3>
+			<p class="timeline-item__title">{title}</p>
+		</div>
+		{logo && (
+			<img class="timeline-item__logo" src={logo} alt="" />
+		)}
+	</header>
+	<p class="timeline-item__summary">{summary}</p>
+	<p class="timeline-item__stack">{stack}</p>
+</article>
+
+<style>
+	.timeline-item {
+		position: relative;
+		padding: 0 0 2.25rem;
+	}
+
+	.timeline-item:last-child {
+		padding-bottom: 0;
+	}
+
+	.timeline-item::before {
+		content: '';
+		position: absolute;
+		left: calc(-1 * var(--timeline-gutter) + 0.5px);
+		top: 0.3rem;
+		width: 0.65rem;
+		height: 0.65rem;
+		border-radius: 50%;
+		background: var(--bg);
+		border: 2px solid var(--accent);
+		transform: translateX(-50%);
+	}
+
+	.timeline-item__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.timeline-item__period {
+		margin: 0 0 0.35rem;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--accent);
+	}
+
+	h3 {
+		margin: 0;
+		font-size: 1.35rem;
+		line-height: 1.25;
+	}
+
+	.timeline-item__title {
+		margin: 0.2rem 0 0;
+		font-weight: 600;
+		color: var(--text);
+	}
+
+	.timeline-item__logo {
+		height: 22px;
+		width: auto;
+		flex-shrink: 0;
+		margin-top: 0.3rem;
+		opacity: 0.8;
+	}
+
+	:global([data-theme="dark"]) .timeline-item__logo {
+		filter: brightness(0) invert(1);
+	}
+
+	.timeline-item__summary {
+		margin: 0.75rem 0 0;
+		max-width: 68ch;
+		color: var(--muted);
+		line-height: 1.7;
+	}
+
+	.timeline-item__stack {
+		margin: 0.85rem 0 0;
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: var(--muted);
+	}
+
+	@media print {
+		.timeline-item {
+			break-inside: avoid;
+		}
+
+		.timeline-item::before {
+			display: none;
+		}
+	}
+</style>
