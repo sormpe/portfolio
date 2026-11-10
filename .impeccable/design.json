@@ -1,0 +1,636 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T13:36:07.000Z",
+  "title": "Design System: Peter Sormunen Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Vermilion",
+        "canonical": "#c42f17",
+        "tonalRamp": [
+          "#1f0000",
+          "#4c0300",
+          "#7e0e00",
+          "#b0230c",
+          "#dc4830",
+          "#fc7760",
+          "#fdb4a5",
+          "#fee9e4"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Vermilion Soft",
+        "canonical": "#fbe9e5",
+        "tonalRamp": [
+          "#0e0a09",
+          "#2c2321",
+          "#4c3e3b",
+          "#6c5d5a",
+          "#8e7e7b",
+          "#b1a19e",
+          "#d0c7c4",
+          "#f1eeed"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "On Accent",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Page",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "bg-alt": {
+        "role": "neutral",
+        "displayName": "Page Alt",
+        "canonical": "#f1f1ef",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424240",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0e0e0e",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#525250",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#e4e4e1",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeee"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Line Strong",
+        "canonical": "#cdcdc9",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423f",
+          "#61615e",
+          "#82827f",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeee"
+        ]
+      },
+      "dark-accent": {
+        "role": "primary",
+        "displayName": "Dark Accent",
+        "canonical": "#ff7a5c",
+        "tonalRamp": [
+          "#1d0100",
+          "#4a0800",
+          "#7a1700",
+          "#ac2c0c",
+          "#d45336",
+          "#f77c60",
+          "#fdb5a4",
+          "#ffe9e3"
+        ]
+      },
+      "dark-accent-soft": {
+        "role": "primary",
+        "displayName": "Dark Accent Soft",
+        "canonical": "#2c1a15",
+        "tonalRamp": [
+          "#0f0a08",
+          "#2f211e",
+          "#513c37",
+          "#715b55",
+          "#947c76",
+          "#b69f99",
+          "#d4c6c2",
+          "#f2edec"
+        ]
+      },
+      "dark-on-accent": {
+        "role": "primary",
+        "displayName": "Dark On Accent",
+        "canonical": "#0c0c0c",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-bg": {
+        "role": "neutral",
+        "displayName": "Dark Page",
+        "canonical": "#0c0c0c",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-bg-alt": {
+        "role": "neutral",
+        "displayName": "Dark Page Alt",
+        "canonical": "#171716",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a4",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "dark-text": {
+        "role": "neutral",
+        "displayName": "Dark Ink",
+        "canonical": "#ededeb",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424240",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "dark-muted": {
+        "role": "neutral",
+        "displayName": "Dark Muted",
+        "canonical": "#adadaa",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeee"
+        ]
+      },
+      "dark-line": {
+        "role": "neutral",
+        "displayName": "Dark Line",
+        "canonical": "#2a2a28",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a3",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "dark-line-strong": {
+        "role": "neutral",
+        "displayName": "Dark Line Strong",
+        "canonical": "#42423f",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423f",
+          "#61615e",
+          "#82827f",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeee"
+        ]
+      },
+      "contact-bg": {
+        "role": "neutral",
+        "displayName": "Contact Ground",
+        "canonical": "#0e0e0e",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "contact-muted": {
+        "role": "neutral",
+        "displayName": "Contact Muted",
+        "canonical": "#b5b5b2",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeee"
+        ]
+      },
+      "contact-surface": {
+        "role": "neutral",
+        "displayName": "Contact Surface",
+        "canonical": "#242423",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a4",
+          "#c9c9c8",
+          "#eeeeee"
+        ]
+      },
+      "dark-contact-bg": {
+        "role": "neutral",
+        "displayName": "Dark Contact Ground",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The hero statement and, in size, the closing contact heading."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "layer-title": {
+        "displayName": "Layer Title",
+        "purpose": "Frontend, Backend and Cloud in the layer rail."
+      },
+      "project-lead": {
+        "displayName": "Project Lead",
+        "purpose": "A project spanning all three layers, at its first mention."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Other project names and employers."
+      },
+      "callout": {
+        "displayName": "Callout",
+        "purpose": "The one-line prompt in the work call to action."
+      },
+      "lede-hero": {
+        "displayName": "Lede Hero",
+        "purpose": "The availability line under the statement."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "The hero byline, section descriptions and About copy."
+      },
+      "summary": {
+        "displayName": "Summary",
+        "purpose": "A project's one-sentence summary."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Work bullets, experience summaries and button labels."
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Nav links, the Contact control and the reference block."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Project category, role and stack lines."
+      }
+    },
+    "shadows": [
+      {
+        "name": "mobile-menu",
+        "value": "0 16px 32px rgba(17, 24, 39, 0.1)",
+        "purpose": "The open mobile menu panel only, the one element that floats over content."
+      },
+      {
+        "name": "arrival-spread",
+        "value": "0 0 0 0.6rem var(--accent-soft)",
+        "purpose": "Extends the arrival highlight tint around an entry without shifting layout."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The one easing curve, token --ease-out."
+      },
+      {
+        "name": "transition-base",
+        "value": "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Hover and state changes on controls, and the nav wordmark fade, token --transition-base."
+      },
+      {
+        "name": "entry-arrive",
+        "value": "2.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The arrival highlight: tint holds to 38%, then fades out, once per arrival. Reduced motion keeps a static tint."
+      },
+      {
+        "name": "ground-fade",
+        "value": "0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Page ground between white and grey as tone sections reach mid-screen, token --transition-ground. Reduced motion and no JavaScript keep sharp bands."
+      },
+      {
+        "name": "press",
+        "value": "translateY(1px)",
+        "purpose": "Active state on buttons, the Contact control, the theme toggle and the menu button."
+      },
+      {
+        "name": "smooth-scroll",
+        "value": "scroll-behavior: smooth",
+        "purpose": "Anchor jumps, only under prefers-reduced-motion: no-preference."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "columns-stack",
+        "value": "860px",
+        "purpose": "Max-width. Column splits stack and the layer title pins under the nav."
+      },
+      {
+        "name": "nav-menu",
+        "value": "800px",
+        "purpose": "Max-width. Nav links collapse into the menu."
+      },
+      {
+        "name": "hero-compact",
+        "value": "760px",
+        "purpose": "Max-width. The portrait becomes a 4.5rem circle beside the byline."
+      },
+      {
+        "name": "actions-wrap",
+        "value": "520px",
+        "purpose": "Max-width. Buttons stretch, primary on its own row."
+      },
+      {
+        "name": "wordmark-drop",
+        "value": "380px",
+        "purpose": "Max-width. The nav wordmark is removed."
+      },
+      {
+        "name": "short-window",
+        "value": "480px",
+        "purpose": "Max-height. The nav and layer titles stop pinning."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one main action, \"Email me\", in the hero, after Work and at the close.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Email me</a>",
+      "css": ".ds-btn-primary { font-family: var(--sans); display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0.5rem 1.4rem; border: 1px solid transparent; border-radius: var(--radius-sm); font-weight: 700; text-decoration: none; transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base); background: var(--text); color: var(--bg); } .ds-btn-primary:hover { background: var(--accent); color: var(--on-accent); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Every other action: See the work, LinkedIn, GitHub.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">See the work</a>",
+      "css": ".ds-btn-secondary { font-family: var(--sans); display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0.5rem 1.4rem; border: 1px solid transparent; border-radius: var(--radius-sm); font-weight: 700; text-decoration: none; transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base); border-color: var(--line-strong); color: var(--text); } .ds-btn-secondary:hover { border-color: var(--accent); color: var(--accent); } .ds-btn-secondary:active { transform: translateY(1px); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky bar on the page colour with a 1px bottom line. The wordmark stays hidden until data-show-name is set, once the hero byline has scrolled away.",
+      "html": "<header class=\"ds-nav\" data-show-name><a class=\"ds-nav-name\" href=\"#\">Peter Sormunen</a><ul class=\"ds-nav-links\"><li><a class=\"ds-nav-link ds-nav-link--active\" href=\"#\" aria-current=\"location\">Work</a></li><li><a class=\"ds-nav-link\" href=\"#\">Experience</a></li><li><a class=\"ds-nav-link\" href=\"#\">About</a></li></ul></header>",
+      "css": ".ds-nav { font-family: var(--sans); display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; min-height: var(--nav-height); border-bottom: 1px solid var(--line); background: var(--ground); color: var(--text); } .ds-nav-name { display: inline-flex; align-items: center; min-height: 2.75rem; font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; color: inherit; text-decoration: none; white-space: nowrap; visibility: hidden; opacity: 0; transition: opacity var(--transition-base), visibility var(--transition-base); } .ds-nav[data-show-name] .ds-nav-name { visibility: visible; opacity: 1; } .ds-nav-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; margin: 0 0 0 auto; padding: 0; list-style: none; } .ds-nav-link { display: flex; align-items: center; min-height: 2.75rem; padding: 0 0.8rem; border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 600; color: var(--muted); text-decoration: none; white-space: nowrap; transition: color var(--transition-base), background var(--transition-base); } .ds-nav-link:hover { color: var(--accent); background: var(--line); } .ds-nav-link--active { color: var(--accent); background: var(--accent-soft); } .ds-nav-link:focus-visible, .ds-nav-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Contact Control",
+      "kind": "button",
+      "refersTo": "nav-contact",
+      "description": "The distinct Contact link at the end of the nav: ink at rest, an underline when active, accent on hover and when its section is current.",
+      "html": "<a class=\"ds-nav-contact\" href=\"#\">Contact</a>",
+      "css": ".ds-nav-contact { font-family: var(--sans); display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1rem; border-radius: var(--radius-sm); background: var(--text); color: var(--bg); font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: background var(--transition-base), color var(--transition-base); } .ds-nav-contact:hover { background: var(--accent); color: var(--on-accent); } .ds-nav-contact:active { transform: translateY(1px); } .ds-nav-contact:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Theme Toggle",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "Icon button that opts in to dark. Shows a moon in light and a sun in dark.",
+      "html": "<button class=\"ds-theme-btn\" type=\"button\" aria-label=\"Switch to dark theme\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/></svg></button>",
+      "css": ".ds-theme-btn { display: flex; align-items: center; justify-content: center; min-width: 2.75rem; min-height: 2.75rem; padding: 0; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--ground); color: var(--text); cursor: pointer; transition: background var(--transition-base); } .ds-theme-btn:hover { background: var(--line); } .ds-theme-btn:active { transform: translateY(1px); } .ds-theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Work Switch",
+      "kind": "custom",
+      "description": "Chooses By layer or By date above Work. Hidden without JavaScript, when the layer view stays.",
+      "html": "<div class=\"ds-switch\" role=\"group\" aria-label=\"Sort work\"><button type=\"button\" aria-pressed=\"true\">By layer</button><button type=\"button\" aria-pressed=\"false\">By date</button></div>",
+      "css": ".ds-switch { font-family: var(--sans); display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 12px; background: var(--bg-alt); } .ds-switch button { min-height: 2.75rem; padding: 0 1.1rem; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--muted); font: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; } .ds-switch button[aria-pressed=\"true\"] { background: var(--text); color: var(--bg); } .ds-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }"
+    },
+    {
+      "name": "Layer Rail With Project Entry",
+      "kind": "custom",
+      "description": "A layer under a strong 1px rule. The header sticks in the narrow column while its flat, uncontained project entries scroll in the wide one.",
+      "html": "<section class=\"ds-layer\"><header class=\"ds-layer-header\"><h3 class=\"ds-layer-title\">Frontend</h3><p class=\"ds-layer-intro\">Interfaces people use every day, and the codebases behind them.</p></header><article class=\"ds-entry\"><h4 class=\"ds-entry-name\">Pricing &amp; Offer System</h4><p class=\"ds-entry-meta\">Client work · Full-stack developer</p><p class=\"ds-entry-summary\">A greenfield internal pricing system that grew from price lists into offer generation.</p><ul class=\"ds-entry-work\"><li>Built the React and TypeScript interface for creating customer price lists.</li></ul><p class=\"ds-entry-foot\">Also under <a class=\"ds-entry-link\" href=\"#\">Backend</a> and <a class=\"ds-entry-link\" href=\"#\">Cloud</a></p></article></section>",
+      "css": ".ds-layer { font-family: var(--sans); line-height: 1.6; color: var(--text); display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr); gap: 1.25rem clamp(2rem, 5vw, 4rem); padding: clamp(1.75rem, 4vw, 3rem) 0; border-top: 1px solid var(--line-strong); } .ds-layer-header { position: sticky; top: calc(var(--nav-height) + 1.5rem); align-self: start; } .ds-layer-title { margin: 0; font-size: clamp(1.5rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; } .ds-layer-intro { margin: 0.5rem 0 0; color: var(--muted); text-wrap: pretty; } .ds-entry-name { margin: 0; font-size: 1.2rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.015em; } .ds-entry-meta { margin: 0.3rem 0 0; font-size: 0.92rem; font-weight: 500; color: var(--muted); } .ds-entry-summary { margin: 0.75rem 0 0; font-size: 1.05rem; text-wrap: pretty; } .ds-entry-work { display: grid; gap: 0.4rem; max-width: 40rem; margin: 0.75rem 0 0; padding-left: 1.1rem; color: var(--muted); } .ds-entry-work li::marker { color: var(--accent); } .ds-entry-foot { margin: 0.75rem 0 0; font-size: 0.92rem; font-weight: 500; color: var(--muted); } .ds-entry-link { display: inline-block; font-weight: 700; color: var(--accent); text-underline-offset: 0.2em; text-decoration-thickness: 1px; } .ds-entry-link:hover { color: var(--accent); } .ds-entry-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; } @media (max-width: 860px) { .ds-layer { display: block; } .ds-layer-title { font-size: 1.9rem; } .ds-layer-intro { margin-bottom: 1.5rem; } }"
+    },
+    {
+      "name": "Arrival Highlight",
+      "kind": "custom",
+      "refersTo": "entry-arrival",
+      "description": "The entry a cross-link lands on. On the page it is driven by :target and fades once; the --preview class holds the tinted frame, which is also the reduced-motion state.",
+      "html": "<article class=\"ds-arrival ds-arrival--preview\" id=\"ds-arrival-demo\"><h4 class=\"ds-arrival-name\">High-Traffic Consumer Platform</h4><p class=\"ds-arrival-text\">Designed and built a rate-limiting proxy on AWS Lambda, deployed with CDK.</p></article>",
+      "css": ".ds-arrival { font-family: var(--sans); line-height: 1.6; color: var(--text); border-radius: 2px; } .ds-arrival-name { margin: 0; font-size: 1.2rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.015em; } .ds-arrival-text { margin: 0.75rem 0 0; color: var(--muted); } .ds-arrival:target, .ds-arrival--preview { background: var(--accent-soft); box-shadow: 0 0 0 0.6rem var(--accent-soft); } @media (prefers-reduced-motion: no-preference) { .ds-arrival:target { background: transparent; box-shadow: 0 0 0 0.6rem transparent; animation: ds-entry-arrive 2.2s var(--ease-out); } @keyframes ds-entry-arrive { from, 38% { background: var(--accent-soft); box-shadow: 0 0 0 0.6rem var(--accent-soft); } to { background: transparent; box-shadow: 0 0 0 0.6rem transparent; } } }"
+    },
+    {
+      "name": "Experience Row",
+      "kind": "custom",
+      "description": "A 1px line above each role, with the period in the narrow column and the role in the wide one.",
+      "html": "<div class=\"ds-row\"><p class=\"ds-row-period\">2021–present</p><div><h3 class=\"ds-row-company\">Crowd Collective</h3><p class=\"ds-row-title\">Senior Consultant</p><p class=\"ds-row-summary\">Consultant across client engagements, alongside internal tooling.</p></div></div>",
+      "css": ".ds-row { font-family: var(--sans); line-height: 1.6; color: var(--text); display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr); gap: 0.25rem clamp(2rem, 5vw, 4rem); padding: 1.75rem 0; border-top: 1px solid var(--line); } .ds-row-period { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); } .ds-row-company { margin: 0; font-size: 1.2rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.015em; } .ds-row-title { margin: 0.15rem 0 0; font-weight: 500; } .ds-row-summary { max-width: 40rem; margin: 0.6rem 0 0; color: var(--muted); text-wrap: pretty; } @media (max-width: 860px) { .ds-row { grid-template-columns: minmax(0, 1fr); } }"
+    },
+    {
+      "name": "Reference List",
+      "kind": "custom",
+      "description": "Skills as plain comma-separated text under a heading and a 1px line, never as tags.",
+      "html": "<div class=\"ds-reference\"><h3 class=\"ds-reference-title\">Skills I've used in production</h3><dl class=\"ds-reference-list\"><div class=\"ds-reference-item\"><dt class=\"ds-reference-term\">Languages</dt><dd class=\"ds-reference-desc\">TypeScript, JavaScript, Java, Python, PHP</dd></div><div class=\"ds-reference-item\"><dt class=\"ds-reference-term\">Testing</dt><dd class=\"ds-reference-desc\">Playwright, Cypress, Vitest, React Testing Library</dd></div></dl></div>",
+      "css": ".ds-reference { font-family: var(--sans); font-size: 0.95rem; line-height: 1.6; color: var(--text); } .ds-reference-title { margin: 0 0 0.9rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); font-size: 1rem; font-weight: 800; } .ds-reference-list { display: grid; gap: 0.65rem; margin: 0; } .ds-reference-item { display: grid; grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr); gap: 0.1rem 1rem; } .ds-reference-term { font-weight: 600; } .ds-reference-desc { margin: 0; color: var(--muted); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Flat, Ruled, One Vermilion",
+    "overview": "This is a clean, conventional developer portfolio, chosen on purpose as the category standard and held to a very high level of craft. The name is a plain description of the system: flat surfaces, 1px rules for structure, and one vermilion accent on white and light grey sections. The quality bar is the craft of Brittany Chiang's portfolio, Josh Comeau's site and Linear. None of them is a template to copy.\n\nBecause the form is familiar, finish does the work: heavy, tightly tracked headings, a shared column split, consistent control heights, considered states. Density is comfortable and made for scanning, with the detail available to anyone who reads on. The few distinctive behaviours all help navigation: a layer name that stays in view, a project highlighted once on arrival, and a nav wordmark that waits until the hero has scrolled away.\n\nLight is the default and the reference. Dark is an opt-in preference, saved in the browser and never taken from the operating system, and it keeps the same structure. The system rejects eyebrows above headings, generic stat rows and walls of tags.",
+    "keyCharacteristics": [
+      "Flat surfaces, structured by 1px rules and whitespace, with no cards",
+      "One vermilion accent, on white and light grey by default",
+      "One typeface, Schibsted Grotesk, with heavy, tightly tracked headings",
+      "The statement is the largest thing on the page, and the name stays small",
+      "Behaviour that helps orientation: the layer rail, the arrival highlight, the deferred wordmark",
+      "One scroll-driven moment: the stack band, with faint logos that never sit behind reading text"
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Vermilion is the only accent hue in the system. It marks list markers, current location and hover, and at rest it never fills a button, a link or a section. Actions are ink, so the red stays rare. A new meaning gets a neutral treatment, not a second accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Opt-in Dark Rule",
+        "body": "Light is what every visitor sees first. Dark appears only after a visitor chooses it with the toggle, and any new colour is defined for both themes.",
+        "section": "colors"
+      },
+      {
+        "name": "The Statement Over Name Rule",
+        "body": "The largest type states what Peter does. His name and title sit above it at lede size, as a plain byline in sentence case, with the name in weight 800 and the title in muted.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Eyebrow Rule",
+        "body": "No heading has a small label above it, in any form: no kickers, no tracked uppercase, no section numbers. A heading starts its own section, and any supporting line goes below it. The hero byline is the single identity line named by the rule above and is not a pattern to repeat.",
+        "section": "typography"
+      },
+      {
+        "name": "The Heavy Heading Rule",
+        "body": "Headings are weight 800 with negative tracking, tighter as they get larger. Tracking is never positive, and nothing is set in uppercase.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Typeface Rule",
+        "body": "Schibsted Grotesk is the only family. Hierarchy comes from size, weight and the ink and muted pair.",
+        "section": "typography"
+      },
+      {
+        "name": "The Layer Rail Rule",
+        "body": "A layer's name is always visible while its projects scroll. On wide screens the header sticks in the left column, 1.5rem below the nav. Once stacked, the title alone pins directly under the nav on a page-coloured strip, and entries get a scroll margin so a jump lands clear of it.",
+        "section": "layout"
+      },
+      {
+        "name": "The First Mention Rule",
+        "body": "A project's summary, metadata and stack appear once, under the first layer it belongs to. Later layers show only what was done in that layer, with links back to its other layers.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat And Ruled Rule",
+        "body": "Content has no cards, boxes, or resting shadows. When two things need separating, use space first, then a 1px rule. A blurred shadow is only for something that floats above the content. Section grounds are the one exception: Experience and Skills and education sit on Page Alt, and Contact is a full-width field of ink that closes the page. Between white and Page Alt the page ground fades over 0.5s when a tone section reaches mid-screen, including the nav. Contact is always a sharp edge, because text has to flip from dark to light there. With reduced motion or no JavaScript, tone sections stay as sharp bands.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Deferred Wordmark Rule",
+        "body": "The hero already names Peter, so the nav wordmark stays hidden while the hero byline is on screen and fades in once it has scrolled under the nav. Without JavaScript the wordmark is always visible.",
+        "section": "components"
+      },
+      {
+        "name": "The Once Only Rule",
+        "body": "The highlight plays once per arrival and never loops, pulses or responds to hover. It exists to confirm where a jump landed.",
+        "section": "components"
+      },
+      {
+        "name": "The Clear Column Rule",
+        "body": "Decoration lives in the hero, the band, the empty rail and the bottom of Contact. It never sits behind a project's text, Experience, About or Skills.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "**Do** separate content with whitespace and 1px rules, using Line Strong for structure and Line within a block.",
+      "**Do** align new labelled content to the 0.7 to 1.6 split so the content column keeps its left edge.",
+      "**Do** define every new colour for both themes.",
+      "**Do** use the shared 0.2s ease-out for state changes, and keep hover to colour and border.",
+      "**Do** make every button and nav control at least 2.75rem tall, and give every new motion a reduced-motion fallback.",
+      "**Do** keep the page working without JavaScript, as the nav links and wordmark do today."
+    ],
+    "donts": [
+      "**Don't** put an eyebrow, kicker or small label above a heading.",
+      "**Don't** put content in cards or give it a resting shadow.",
+      "**Don't** add a second accent or typeface.",
+      "**Don't** make dark the default or follow the operating system's theme.",
+      "**Don't** make the name larger than the statement, or show the nav wordmark while the hero byline is on screen.",
+      "**Don't** add a generic stat row or a wall of tags. Skills stay as plain text.",
+      "**Don't** lift or move anything on hover. Controls respond with colour and border, plus a 1px press.",
+      "**Don't** repeat a project's summary and stack in a later layer, or loop the arrival highlight.",
+      "**Don't** put logos or patterns behind reading text, or mix brand logos and generic shapes in one set."
+    ]
+  }
+}

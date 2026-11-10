@@ -5,7 +5,7 @@ const links = [
 	{ href: '#work',       label: 'Work' },
 	{ href: '#experience', label: 'Experience' },
 	{ href: '#about',      label: 'About' },
-	{ href: '#contact',    label: 'Contact' },
+	{ href: '#background', label: 'Skills and education' },
 ];
 ---
 
@@ -34,25 +34,29 @@ const links = [
 						</a>
 					</li>
 				))}
+				<li class="site-nav__theme">
+					<button class="theme-btn" id="theme-btn" aria-label="Switch to dark theme" type="button">
+						<svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<circle cx="12" cy="12" r="5"/>
+							<line x1="12" y1="1" x2="12" y2="3"/>
+							<line x1="12" y1="21" x2="12" y2="23"/>
+							<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+							<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+							<line x1="1" y1="12" x2="3" y2="12"/>
+							<line x1="21" y1="12" x2="23" y2="12"/>
+							<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+							<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+						</svg>
+						<svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+						</svg>
+						<span class="theme-btn__label" id="theme-label">Dark theme</span>
+					</button>
+				</li>
 			</ul>
 		</nav>
 
-		<button class="theme-btn" id="theme-btn" aria-label="Switch to dark theme" type="button">
-			<svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-				<circle cx="12" cy="12" r="5"/>
-				<line x1="12" y1="1" x2="12" y2="3"/>
-				<line x1="12" y1="21" x2="12" y2="23"/>
-				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-				<line x1="1" y1="12" x2="3" y2="12"/>
-				<line x1="21" y1="12" x2="23" y2="12"/>
-				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-			</svg>
-			<svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-			</svg>
-		</button>
+		<a href="#contact" class="nav-contact" data-section="contact">Contact</a>
 	</div>
 </header>
 
@@ -60,6 +64,8 @@ const links = [
 	(function () {
 		var root = document.documentElement;
 		var themeBtn = document.getElementById('theme-btn');
+		var themeLabel = document.getElementById('theme-label');
+		var themeMeta = document.querySelector('meta[name="theme-color"]');
 		var menuBtn = document.getElementById('menu-btn');
 		var header = document.querySelector('.site-nav');
 		if (!themeBtn || !menuBtn || !header) return;
@@ -68,6 +74,8 @@ const links = [
 		function syncTheme() {
 			var isDark = root.getAttribute('data-theme') === 'dark';
 			themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+			themeLabel.textContent = isDark ? 'Light theme' : 'Dark theme';
+			if (themeMeta) themeMeta.setAttribute('content', isDark ? '#0c0c0c' : '#ffffff');
 		}
 		syncTheme();
 
@@ -99,8 +107,21 @@ const links = [
 			if (header.hasAttribute('data-open') && !header.contains(e.target)) setOpen(false);
 		});
 
-		// Active section tracking
-		var navLinks = document.querySelectorAll('.nav-link');
+		header.addEventListener('focusout', function (e) {
+			if (e.relatedTarget && !header.contains(e.relatedTarget)) setOpen(false);
+		});
+
+		// The hero already names Peter, so the nav wordmark waits until that line scrolls away.
+		function watchHeroName() {
+			var heroName = document.querySelector('.hero__identity');
+			if (!heroName) { header.setAttribute('data-show-name', ''); return; }
+			new IntersectionObserver(function (entries) {
+				header.toggleAttribute('data-show-name', !entries[0].isIntersecting);
+			}, { rootMargin: '-64px 0px 0px 0px' }).observe(heroName);
+		}
+
+		// Active section tracking: whichever section crosses mid-screen, the same line the ground uses.
+		var navLinks = document.querySelectorAll('[data-section]');
 
 		navLinks.forEach(function (l) {
 			l.addEventListener('click', function () { setOpen(false); });
@@ -119,21 +140,24 @@ const links = [
 			return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
 		}
 
-		var observer = new IntersectionObserver(function (entries) {
-			if (atPageEnd()) return;
-			entries.forEach(function (entry) {
-				if (entry.isIntersecting) setActive(entry.target.id);
-			});
-		}, { rootMargin: '-20% 0px -75% 0px' });
+		var midSection = null;
 
-		// The last section is too short to reach the observer band, so mark it at the bottom.
+		var observer = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				if (entry.isIntersecting) midSection = entry.target.id;
+			});
+			if (!atPageEnd()) setActive(midSection);
+		}, { rootMargin: '-50% 0px -50% 0px' });
+
+		// On a tall window Contact may never reach mid-screen, so mark it at the bottom.
 		window.addEventListener('scroll', function () {
-			if (atPageEnd()) setActive('contact');
+			setActive(atPageEnd() ? 'contact' : midSection);
 		}, { passive: true });
 
 		// This script runs before <main> is parsed, so observe once the DOM is ready.
 		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('section[id]').forEach(function (s) {
+			watchHeroName();
+			document.querySelectorAll('main > section[id]').forEach(function (s) {
 				observer.observe(s);
 			});
 		});
@@ -142,39 +166,73 @@ const links = [
 
 <style>
 	.site-nav {
-		position: fixed;
+		position: sticky;
 		top: 0;
-		left: 0;
-		right: 0;
 		z-index: var(--z-overlay);
-		height: var(--nav-height);
+		min-height: var(--nav-height);
 		border-bottom: 1px solid var(--line);
-		background: color-mix(in srgb, var(--bg) 88%, transparent);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
+		background: var(--ground);
+	}
+
+	:global(html.fade) .site-nav {
+		transition: background-color var(--transition-ground);
 	}
 
 	.site-nav__inner {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		height: 100%;
+		min-height: var(--nav-height);
 		width: min(calc(100% - 2rem), var(--content-width));
 		margin: 0 auto;
-		gap: 1rem;
+		gap: 0.25rem 0.75rem;
+	}
+
+	@media (hover: hover) {
+		.site-nav__name:hover,
+		.nav-link:hover {
+			color: var(--accent);
+		}
+
+		.nav-link:hover {
+			background: var(--line);
+		}
+
+		.nav-contact:hover {
+			background: var(--accent);
+			color: var(--on-accent);
+		}
 	}
 
 	.site-nav__name {
-		flex-shrink: 0;
-		margin-right: auto;
-		font-size: 0.98rem;
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		font-size: 1rem;
 		font-weight: 800;
-		color: var(--text);
+		letter-spacing: -0.01em;
 		text-decoration: none;
 		white-space: nowrap;
 	}
 
+	:global(.js) .site-nav__name {
+		visibility: hidden;
+		opacity: 0;
+		transition: opacity var(--transition-base), visibility var(--transition-base);
+	}
+
+	:global(.js) .site-nav[data-show-name] .site-nav__name {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	.site-nav__nav {
+		margin-left: auto;
+	}
+
 	.site-nav__links {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.25rem;
 		margin: 0;
@@ -183,10 +241,12 @@ const links = [
 	}
 
 	.nav-link {
-		display: block;
-		padding: 0.5rem 0.85rem;
-		border-radius: 999px;
-		font-size: 0.92rem;
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
+		padding: 0 0.8rem;
+		border-radius: var(--radius-sm);
+		font-size: 0.95rem;
 		font-weight: 600;
 		color: var(--muted);
 		text-decoration: none;
@@ -194,14 +254,34 @@ const links = [
 		transition: color var(--transition-base), background var(--transition-base);
 	}
 
-	.nav-link:hover {
-		color: var(--text);
-		background: var(--bg-alt);
-	}
-
 	.nav-link.active {
 		color: var(--accent);
 		background: var(--accent-soft);
+	}
+
+	.nav-contact {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		padding: 0 1rem;
+		border-radius: var(--radius-sm);
+		background: var(--text);
+		color: var(--bg);
+		font-size: 0.95rem;
+		font-weight: 700;
+		text-decoration: none;
+		transition: background var(--transition-base), color var(--transition-base);
+	}
+
+	.nav-contact:active,
+	.theme-btn:active,
+	.menu-btn:active {
+		transform: translateY(1px);
+	}
+
+	.nav-contact.active {
+		text-decoration: underline;
+		text-underline-offset: 0.25em;
 	}
 
 	.menu-btn {
@@ -210,28 +290,37 @@ const links = [
 
 	.theme-btn,
 	.menu-btn {
-		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		height: 2.5rem;
+		min-height: 2.75rem;
 		border: 1px solid var(--line-strong);
-		border-radius: 999px;
-		background: var(--surface);
+		border-radius: var(--radius-sm);
+		background: var(--ground);
 		color: var(--text);
 		font: inherit;
 		cursor: pointer;
-		transition: background var(--transition-base), border-color var(--transition-base);
+		transition: background var(--transition-base);
+	}
+
+	:global(html.fade) .theme-btn,
+	:global(html.fade) .menu-btn {
+		transition: background-color var(--transition-ground);
 	}
 
 	.theme-btn {
 		display: flex;
-		width: 2.5rem;
+		gap: 0.6rem;
+		min-width: 2.75rem;
 		padding: 0;
+	}
+
+	.theme-btn__label {
+		display: none;
 	}
 
 	.theme-btn:hover,
 	.menu-btn:hover {
-		background: var(--bg-alt);
+		background: var(--line);
 	}
 
 	.icon {
@@ -251,13 +340,30 @@ const links = [
 		display: none;
 	}
 
-	@media (max-width: 720px) {
+	/* The toggle needs JavaScript, so it only appears when it can work. */
+	:global(html:not(.js)) .site-nav__theme {
+		display: none;
+	}
+
+	/* Leave as much of a short or heavily zoomed window as possible for content. */
+	@media (max-height: 480px) {
+		.site-nav {
+			position: static;
+		}
+	}
+
+	@media (max-width: 800px) {
+		/* Without JS the wrapped links are too tall to pin over the content. */
+		:global(html:not(.js)) .site-nav {
+			position: static;
+		}
+
 		/* Without JS the links stay visible inline; with JS they collapse into a menu. */
 		:global(.js) .menu-btn {
 			display: inline-flex;
 			gap: 0.35rem;
 			padding: 0 0.9rem;
-			font-size: 0.9rem;
+			font-size: 0.95rem;
 			font-weight: 700;
 		}
 
@@ -272,7 +378,7 @@ const links = [
 		:global(.js) .site-nav__links {
 			display: none;
 			position: absolute;
-			top: calc(100% + 1px);
+			top: 100%;
 			left: 0;
 			right: 0;
 			flex-direction: column;
@@ -280,8 +386,8 @@ const links = [
 			gap: 0.15rem;
 			padding: 0.5rem 1rem 1rem;
 			border-bottom: 1px solid var(--line);
-			background: var(--bg);
-			box-shadow: var(--shadow-strong);
+			background: var(--ground);
+			box-shadow: 0 16px 32px rgba(14, 14, 14, 0.1);
 		}
 
 		.site-nav[data-open] .site-nav__links {
@@ -289,12 +395,39 @@ const links = [
 		}
 
 		:global(.js) .nav-link {
-			padding: 0.8rem 1rem;
-			border-radius: var(--radius-md);
+			padding: 0 1rem;
+			min-height: 3rem;
 			font-size: 1rem;
 		}
 
-		:global(html:not(.js)) .site-nav__name {
+		:global(.js) .theme-btn {
+			justify-content: flex-start;
+			width: 100%;
+			min-height: 3rem;
+			margin-top: 0.5rem;
+			padding: 0 1rem;
+		}
+
+		:global(.js) .theme-btn__label {
+			display: inline;
+			font-size: 1rem;
+			font-weight: 600;
+		}
+	}
+
+	/* No room for the name beside Menu and Contact; the hero already carries it. */
+	@media (max-width: 380px) {
+		:global(.js) .site-nav__name {
+			display: none;
+		}
+
+		:global(.js) .site-nav__inner {
+			flex-wrap: nowrap;
+		}
+	}
+
+	@media print {
+		.site-nav {
 			display: none;
 		}
 	}

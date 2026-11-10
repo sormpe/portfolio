@@ -1,0 +1,159 @@
+---
+import { stack } from '../data/stack';
+
+const items = [...stack, ...stack, ...stack];
+---
+
+<div class="stack-band" aria-hidden="true">
+	<canvas></canvas>
+	<div class="stack-band__strip">
+		<div class="stack-band__row">
+			{items.map((item) => (
+				<span>
+					{item.path && <svg viewBox="0 0 24 24"><path d={item.path} /></svg>}
+					{item.name}
+				</span>
+			))}
+		</div>
+	</div>
+</div>
+
+<script is:inline>
+	(function () {
+		var band = document.querySelector('.stack-band');
+		var canvas = band && band.querySelector('canvas');
+		var row = band && band.querySelector('.stack-band__row');
+		if (!canvas || !canvas.getContext) return;
+		var ctx = canvas.getContext('2d');
+
+		// A field of short vermilion strokes whose angles follow a smooth noise of position and scroll.
+		function paint(progress) {
+			var width = canvas.clientWidth;
+			var height = canvas.clientHeight;
+			var ratio = Math.min(window.devicePixelRatio || 1, 2);
+			if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
+				canvas.width = Math.round(width * ratio);
+				canvas.height = Math.round(height * ratio);
+			}
+			ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+			ctx.clearRect(0, 0, width, height);
+			var step = width < 700 ? 20 : 26;
+			var reach = step * 0.36;
+			ctx.lineWidth = 2;
+			ctx.lineCap = 'round';
+			for (var y = step / 2, i = 0; y < height; y += step, i++) {
+				for (var x = step / 2, j = 0; x < width; x += step, j++) {
+					var n = Math.sin(j * 0.21 + progress * 0.006) + Math.cos(i * 0.55 - j * 0.09 + progress * 0.004) + Math.sin((i + j) * 0.13);
+					var angle = n * 1.1 + progress * 0.002;
+					var strength = Math.max(0, (n + 1.2) / 3.2);
+					ctx.strokeStyle = 'rgba(196, 47, 23, ' + (0.12 + strength * 0.68).toFixed(2) + ')';
+					ctx.beginPath();
+					ctx.moveTo(x - Math.cos(angle) * reach, y - Math.sin(angle) * reach);
+					ctx.lineTo(x + Math.cos(angle) * reach, y + Math.sin(angle) * reach);
+					ctx.stroke();
+				}
+			}
+		}
+
+		// Without motion the pattern is drawn once and the row stays put.
+		if (!document.documentElement.classList.contains('fade')) {
+			paint(0);
+			window.addEventListener('resize', function () { paint(0); });
+			return;
+		}
+
+		var ticking = false;
+		function draw() {
+			ticking = false;
+			var rect = band.getBoundingClientRect();
+			if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
+			var progress = window.innerHeight - rect.top;
+			row.style.transform = 'translate3d(' + (-progress * 0.35).toFixed(1) + 'px, 0, 0)';
+			paint(progress);
+		}
+
+		window.addEventListener('scroll', function () {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(draw);
+			}
+		}, { passive: true });
+		window.addEventListener('resize', draw);
+		draw();
+	})();
+</script>
+
+<style>
+	/* The page's one moving moment between hero and Work: the stack on a dark band. */
+	.stack-band {
+		position: relative;
+		overflow: hidden;
+		height: clamp(8rem, 13vw, 11rem);
+		margin-top: clamp(3rem, 6vw, 5rem);
+		margin-bottom: calc(-1 * clamp(1.5rem, 4vw, 3.5rem));
+		background: var(--contact-bg);
+		color: #f3f1ec;
+		pointer-events: none;
+	}
+
+	/* On the dark page the band is darker still, so a rule marks its edges. */
+	:global(html[data-theme='dark']) .stack-band {
+		border-block: 1px solid var(--line);
+	}
+
+	canvas {
+		position: absolute;
+		inset: 0;
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	/* A soft dark strip keeps the names readable over the strokes. */
+	.stack-band__strip {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		right: 0;
+		transform: translateY(-50%);
+		padding: clamp(0.9rem, 1.6vw, 1.4rem) 0;
+		background: linear-gradient(
+			180deg,
+			transparent,
+			var(--contact-bg) 30%,
+			var(--contact-bg) 70%,
+			transparent
+		);
+	}
+
+	.stack-band__row {
+		display: flex;
+		align-items: center;
+		gap: clamp(2rem, 4vw, 3.5rem);
+		width: max-content;
+		font-size: clamp(1.05rem, 1.9vw, 1.65rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		will-change: transform;
+	}
+
+	span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		white-space: nowrap;
+	}
+
+	svg {
+		flex: none;
+		width: 0.95em;
+		height: 0.95em;
+		fill: currentColor;
+	}
+
+	@media print {
+		.stack-band {
+			display: none;
+		}
+	}
+</style>
