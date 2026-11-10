@@ -1,0 +1,100 @@
+---
+import { logoPaths } from '../data/stack';
+
+// Each row starts at a different logo so the rows never line up.
+const rows = [0, 3, 6].map((start) => {
+	const row = [...logoPaths.slice(start), ...logoPaths.slice(0, start)];
+	return [...row, ...row, ...row];
+});
+---
+
+<div class="logo-field" aria-hidden="true">
+	{rows.map((row) => (
+		<div class="logo-field__row">
+			{row.map((path) => (
+				<svg viewBox="0 0 24 24"><path d={path} /></svg>
+			))}
+		</div>
+	))}
+</div>
+
+<script is:inline>
+	(function () {
+		var root = document.documentElement;
+		var field = document.querySelector('.logo-field');
+		var band = document.querySelector('.stack-band');
+		if (!field || !band || !root.classList.contains('fade')) return;
+
+		var rows = field.querySelectorAll('.logo-field__row');
+		var speeds = [-0.14, 0.1, -0.07];
+		var offsets = [-120, -900, -420];
+		var ticking = false;
+
+		// The field drifts behind the hero and is gone by the time the band's lower edge reaches mid-screen,
+		// so it never sits behind the Work text.
+		function draw() {
+			ticking = false;
+			var gone = band.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.6;
+			var visible = Math.min(1, Math.max(0, 1 - window.scrollY / Math.max(gone, 1)));
+			field.style.setProperty('--field-visible', visible.toFixed(3));
+			if (!visible) return;
+			rows.forEach(function (row, i) {
+				row.style.transform = 'translate3d(' + (offsets[i] + window.scrollY * speeds[i]).toFixed(1) + 'px, 0, 0)';
+			});
+		}
+
+		window.addEventListener('scroll', function () {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(draw);
+			}
+		}, { passive: true });
+		window.addEventListener('resize', draw);
+		draw();
+	})();
+</script>
+
+<style>
+	/* Only drawn when the page animates; without it the hero stays plain. */
+	.logo-field {
+		--field-visible: 1;
+		--field-strength: 0.035;
+		display: none;
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		overflow: hidden;
+		align-content: space-around;
+		color: var(--text);
+		opacity: calc(var(--field-strength) * var(--field-visible));
+		pointer-events: none;
+	}
+
+	:global(html.fade) .logo-field {
+		display: grid;
+	}
+
+	:global(html[data-theme='dark']) .logo-field {
+		--field-strength: 0.05;
+	}
+
+	.logo-field__row {
+		display: flex;
+		gap: clamp(3rem, 7vw, 7rem);
+		width: max-content;
+		will-change: transform;
+	}
+
+	svg {
+		flex: none;
+		width: clamp(5rem, 12vw, 11rem);
+		height: clamp(5rem, 12vw, 11rem);
+		fill: currentColor;
+	}
+
+	@media print {
+		:global(html.fade) .logo-field {
+			display: none;
+		}
+	}
+</style>

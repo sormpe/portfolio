@@ -1,194 +1,354 @@
 ---
+import { Picture } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Nav from '../components/Nav.astro';
-import SkillTag from '../components/SkillTag.astro';
-import { education, experience, highlights, projects, skills, site } from '../data/site';
+import LayerMark from '../components/LayerMark.astro';
+import LogoField from '../components/LogoField.astro';
+import StackBand from '../components/StackBand.astro';
+import profile from '../assets/profile.jpg';
+import { education, experience, layers, projects, skills, site, spokenLanguages } from '../data/site';
+import { logoPaths } from '../data/stack';
+
+const emailHref = `mailto:${site.email}`;
+const layerName = (id: string) => layers.find((layer) => layer.id === id)?.name;
+const projectById = (id: string) => projects.find((project) => project.id === id)!;
+// The contact row starts mid-list so it doesn't repeat the hero's opening logos.
+const contactLogos = [...logoPaths.slice(5), ...logoPaths.slice(0, 5)];
+const firstLayer = (project: (typeof projects)[number]) => layers.find((layer) => project.work[layer.id])!;
 ---
 
 <Layout title={`${site.name} | ${site.title}`} description={site.description}>
 	<Nav />
 	<main class="page" id="main" tabindex="-1">
 		<section class="hero" id="top" aria-labelledby="hero-title">
-			<div class="hero__content">
-				<p class="hero__role">{site.title}</p>
-				<h1 id="hero-title">{site.name}</h1>
-				<p class="lede">{site.intro}</p>
-				<ul class="hero__meta">
-					<li>
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-							<circle cx="12" cy="10" r="3"/>
-						</svg>
-						{site.location}
-					</li>
-					<li>
-						<span class="status-dot" aria-hidden="true"></span>
-						{site.availabilityShort}
-					</li>
-				</ul>
-				<div class="hero__actions">
-					<a class="button button--primary" href="#work">Selected work</a>
-					<a class="button button--secondary" href="#contact">Contact</a>
+			<p class="hero__identity"><strong>{site.name}</strong> <span>{site.title}</span></p>
+			<h1 id="hero-title">{site.statement}</h1>
+			<div class="hero__next">
+				<p class="hero__availability">{site.availability}. Based in {site.location}.</p>
+				<div class="actions">
+					<a class="button button--primary" href={emailHref}>Email me</a>
+					<a class="button button--secondary" href="#work">See the work</a>
 				</div>
 			</div>
-
-			<figure class="hero__portrait">
-				<img src="/profile.jpg" alt={`Portrait of ${site.name}`} width="1365" height="2048" />
-			</figure>
-
-			<ul class="highlights" aria-label="Highlights">
-				{highlights.map((item) => (
-					<li>
-						<strong>{item.label}</strong>
-						<span>{item.value}</span>
-					</li>
-				))}
-			</ul>
+			<Picture
+				class="hero__portrait"
+				pictureAttributes={{ class: 'hero__picture' }}
+				src={profile}
+				formats={['avif', 'webp']}
+				widths={[192, 360, 640]}
+				sizes="(max-width: 760px) 72px, 224px"
+				alt={`Portrait of ${site.name}`}
+				loading="eager"
+			/>
 		</section>
+
+		<StackBand />
 
 		<section class="section" id="work">
 			<SectionHeading
-				kicker="Selected work"
-				title="What I've built"
+				title="Work"
 				description="Recent client, internal, and research projects. Client names are left out."
 			/>
-			<div class="work-list">
+			<div class="work-switch" role="group" aria-label="Sort work">
+				<button type="button" data-work-view="layers" aria-pressed="true">By layer</button>
+				<button type="button" data-work-view="date" aria-pressed="false">By date</button>
+			</div>
+			<div id="work-layers">
+			{layers.map((layer) => (
+				<section class="layer" id={layer.id} aria-labelledby={`${layer.id}-title`}>
+					<header class="layer__header">
+						<h3 id={`${layer.id}-title`}>{layer.name}</h3>
+						<p>{layer.intro}</p>
+						<LayerMark layer={layer.id} />
+					</header>
+					<div class="layer__entries">
+						{layer.order.map(projectById).map((project) => {
+							const touched = Object.keys(project.work);
+							const others = touched.filter((id) => id !== layer.id);
+							const isFirst = layers.find((l) => project.work[l.id])?.id === layer.id;
+							return (
+								<article class:list={['entry', { 'entry--lead': isFirst && touched.length === 3 }]} id={`${layer.id}-${project.id}`}>
+									<h4>{project.name}</h4>
+									{isFirst && (
+										<>
+											<p class="entry__meta">
+												{project.category} · {project.years} · {project.role}{touched.length === 3 && ' · Spans all three layers'}
+											</p>
+											<p class="entry__summary">{project.summary}</p>
+										</>
+									)}
+									<ul class="entry__work">
+										{project.work[layer.id]?.map((line) => <li>{line}</li>)}
+									</ul>
+									<p class="entry__foot">
+										{isFirst && (
+											<span>
+												<span class="visually-hidden">Technologies: </span>{project.stack.join(' · ')}
+											</span>
+										)}
+										<span class="entry__also">
+											Also under {others.map((id, index) => (
+												<>
+													{index > 0 && ' and '}
+													<a href={`#${id}-${project.id}`}>{layerName(id)}</a>
+												</>
+											))}
+										</span>
+									</p>
+								</article>
+							);
+						})}
+					</div>
+				</section>
+			))}
+			</div>
+			<ol class="work-date" id="work-date" hidden>
 				{projects.map((project) => (
-					<article class="work-item">
-						<header class="work-item__header">
-							<p class="work-item__category">{project.category}</p>
+					<li class="date-row" id={`date-${project.id}`}>
+						<p class="row__period">{project.years}</p>
+						<div class="entry">
 							<h3>{project.name}</h3>
-							<p class="work-item__role">{project.role}</p>
-						</header>
-						<div class="work-item__body">
-							<p class="work-item__summary">{project.summary}</p>
-							<ul class="work-item__outcomes" aria-label="Outcomes">
-								{project.outcomes.map((outcome) => <li>{outcome}</li>)}
-							</ul>
-							<p class="work-item__stack">
-								<span class="visually-hidden">Technologies: </span>{project.stack.join(' · ')}
+							<p class="entry__meta">{project.category} · {project.role}</p>
+							<p class="entry__summary">{project.summary}</p>
+							{layers.filter((layer) => project.work[layer.id]).map((layer) => (
+								<>
+									<h4 class="date-row__layer">{layer.name}</h4>
+									<ul class="entry__work">
+										{project.work[layer.id]?.map((line) => <li>{line}</li>)}
+									</ul>
+								</>
+							))}
+							<p class="entry__foot">
+								<span>
+									<span class="visually-hidden">Technologies: </span>{project.stack.join(' · ')}
+								</span>
 							</p>
 						</div>
-					</article>
+					</li>
 				))}
-			</div>
+			</ol>
+			<aside class="work-cta" aria-label="Get in touch">
+				<p>Sounds like the kind of work you need done?</p>
+				<a class="button button--primary" href={emailHref}>Email me</a>
+			</aside>
 		</section>
 
-		<section class="section" id="experience">
+		<section class="section section--tone" id="experience">
 			<SectionHeading
-				kicker="Experience"
-				title="Where I've worked"
+				title="Experience"
 				description="Ten years across a product company, a university, and consulting."
 			/>
-			<div class="timeline">
-				{experience.map((item) => <ProjectCard {...item} />)}
-			</div>
+			<ol class="rows">
+				{experience.map((item) => (
+					<li class="row">
+						<p class="row__period">{item.period}</p>
+						<div>
+							<h3>{item.company}</h3>
+							<p class="row__title">{item.title}</p>
+							<p class="row__summary">{item.summary}</p>
+							{item.projects.length > 0 && (
+								<ul class="row__projects" aria-label={`Projects at ${item.company}`}>
+									{item.projects.map(projectById).map((project) => (
+										<li>
+											<a href={`#${firstLayer(project).id}-${project.id}`}>
+												<span class="row__project-years">{project.years}</span>
+												<span class="row__project-name">{project.name}</span>
+											</a>
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
+					</li>
+				))}
+			</ol>
 		</section>
 
 		<section class="section about" id="about">
-			<SectionHeading
-				kicker="About"
-				title="Building and improving web software"
-			/>
+			<SectionHeading title="About" />
 			<div class="about__copy">
 				<p>
-					I build and improve web applications, from new projects to products already in use. Working
-					across the stack, I contribute to technical decisions and carry features through
-					implementation, testing, and release. I consider how each change fits the larger product,
-					not just whether it works on its own.
+					I build and improve web applications, from new projects to products already in use. I
+					contribute to technical decisions and carry features through implementation, testing, and
+					release.
 				</p>
 				<p>
-					Software is a team effort, so I work closely with product, design, and engineering, and have
-					also facilitated Scrum. AI tools are part of my workflow; I use them as support and remain
-					accountable for the code and the decisions behind it.
+					I work closely with product, design, and engineering, and have also facilitated Scrum. AI
+					tools are part of my workflow; I use them as support and remain accountable for the code and
+					the decisions behind it.
 				</p>
 			</div>
 		</section>
 
-		<section class="section" id="skills">
-			<SectionHeading
-				kicker="Skills"
-				title="What I build with"
-				description="Languages, frameworks, and tools used regularly in production."
-			/>
-			<div class="skill-groups">
-				{skills.map((group) => (
-					<div class="skill-group">
-						<h3 class="skill-group__label">{group.group}</h3>
-						<div class="tag-cloud">
-							{group.items.map((skill) => <SkillTag name={skill} />)}
-						</div>
+		<section class="section section--tone" id="background">
+			<SectionHeading title="Skills and education" />
+			<div class="reference">
+				<div>
+					<h3>Skills I’ve used in production</h3>
+					<dl class="reference__list">
+						{skills.map((group) => (
+							<div>
+								<dt>{group.group}</dt>
+								<dd>{group.items.join(', ')}</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+				<div class="reference__side">
+					<div>
+						<h3>Education</h3>
+						<dl class="reference__list reference__list--stacked">
+							{education.map((entry) => (
+								<div>
+									<dt>{entry.degree}</dt>
+									<dd>{entry.school}, <span class="nowrap">{entry.period}</span></dd>
+								</div>
+							))}
+						</dl>
 					</div>
-				))}
-			</div>
-		</section>
-
-		<section class="section" id="education">
-			<SectionHeading
-				kicker="Education"
-				title="Aalto University and beyond"
-				description="I studied computer science at Aalto, specialising in web technologies. I’m now studying mathematical sciences at the University of Helsinki, including mathematics, economics, econometrics, and social science."
-			/>
-			<div class="education-grid">
-				{education.map((entry) => (
-					<article class="education-card u-card">
-						<div class="education-card__header">
-							<p class="education-card__period">{entry.period}</p>
-							{entry.logo && (
-								<img class="education-card__logo" src={entry.logo} alt="" />
-							)}
-						</div>
-						<h3>{entry.school}</h3>
-						<p class="education-card__degree">{entry.degree}</p>
-						<p>{entry.focus}</p>
-					</article>
-				))}
+					<div>
+						<h3>Spoken languages</h3>
+						<p class="reference__text">{spokenLanguages.join(', ')}</p>
+					</div>
+				</div>
 			</div>
 		</section>
 
 		<section class="section contact" id="contact">
-			<SectionHeading
-				kicker="Contact"
-				title="Let's work together"
-				description="Reach out about consulting engagements, roles, or anything you're building."
-				center={true}
-			/>
-			<div class="contact-card u-card">
-				<div class="contact-card__actions">
-					<a class="button button--primary" href={`mailto:${site.email}`}>Email me</a>
-					<a class="button button--secondary" href={site.linkedin}>LinkedIn</a>
-					<a class="button button--secondary" href={site.github}>GitHub</a>
-				</div>
-				<dl class="contact-meta">
-					<div>
-						<dt>Email</dt>
-						<dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
-					</div>
-					<div>
-						<dt>Based in</dt>
-						<dd>{site.location} · {site.timezone}</dd>
-					</div>
-					<div>
-						<dt>Availability</dt>
-						<dd>{site.availability}</dd>
-					</div>
-				</dl>
+			<div class="contact-field" aria-hidden="true">
+				{[...contactLogos, ...contactLogos].map((path) => (
+					<svg viewBox="0 0 24 24"><path d={path} /></svg>
+				))}
 			</div>
+			<SectionHeading
+				title="Get in touch"
+				description="Email me about consulting engagements, roles, or anything you’re building. A short note is fine."
+			/>
+			<div class="actions contact__actions">
+				<a class="button button--primary" href={emailHref}>Email me</a>
+				<a class="button button--secondary" href={site.linkedin}>LinkedIn</a>
+				<a class="button button--secondary" href={site.github}>GitHub</a>
+			</div>
+			<dl class="contact-meta">
+				<div>
+					<dt>Email</dt>
+					<dd><a href={emailHref}>{site.email}</a></dd>
+				</div>
+				<div>
+					<dt>Based in</dt>
+					<dd>{site.location}, {site.timezone}</dd>
+				</div>
+				<div>
+					<dt>Availability</dt>
+					<dd>{site.availability}</dd>
+				</div>
+			</dl>
 		</section>
 	</main>
+	<LogoField />
 </Layout>
 
+<script is:inline>
+	(function () {
+		var buttons = document.querySelectorAll('[data-work-view]');
+		var views = { layers: document.getElementById('work-layers'), date: document.getElementById('work-date') };
+
+		function show(view) {
+			views.layers.hidden = view !== 'layers';
+			views.date.hidden = view !== 'date';
+			buttons.forEach(function (b) {
+				b.setAttribute('aria-pressed', String(b.dataset.workView === view));
+			});
+		}
+
+		buttons.forEach(function (b) {
+			b.addEventListener('click', function () { show(b.dataset.workView); });
+		});
+
+		// A link to the hash already in the URL fires no hashchange, so clicks reveal the layer view too.
+		document.addEventListener('click', function (e) {
+			var link = e.target.closest && e.target.closest('a[href^="#"]');
+			var target = link && document.getElementById(link.getAttribute('href').slice(1));
+			if (target && views.layers.contains(target) && views.layers.hidden) show('layers');
+		});
+
+		// Layer links can arrive while the date view is showing, so reveal their target first.
+		function revealTarget() {
+			var target = location.hash && document.getElementById(location.hash.slice(1));
+			if (target && views.layers.contains(target) && views.layers.hidden) {
+				show('layers');
+				target.scrollIntoView();
+			}
+		}
+		window.addEventListener('hashchange', revealTarget);
+
+		// Without the fade, tone sections stay as sharp bands and the ground never changes.
+		if (!document.documentElement.classList.contains('fade')) return;
+
+		// Contact counts as toned so the grey holds behind the Skills section above it.
+		var toned = new Set();
+		var observer = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				if (entry.isIntersecting) toned.add(entry.target);
+				else toned.delete(entry.target);
+			});
+			document.body.classList.toggle('toned', toned.size > 0);
+		}, { rootMargin: '-50% 0px -50% 0px' });
+
+		document.querySelectorAll('.section--tone, #contact').forEach(function (section) {
+			observer.observe(section);
+		});
+
+		// Layer marks tilt as their layer passes, and the contact logos drift sideways.
+		var marks = document.querySelectorAll('.layer-mark');
+		var contact = document.getElementById('contact');
+		var contactField = contact.querySelector('.contact-field');
+		var ticking = false;
+
+		function drift() {
+			ticking = false;
+			var height = window.innerHeight;
+			marks.forEach(function (mark) {
+				var rect = mark.closest('.layer').getBoundingClientRect();
+				if (rect.bottom < 0 || rect.top > height) return;
+				var progress = (height - rect.top) / (height + rect.height) - 0.5;
+				mark.style.transform = 'translate3d(0, ' + (progress * -40).toFixed(1) + 'px, 0) rotate(' + (progress * 14).toFixed(1) + 'deg)';
+			});
+			var top = contact.getBoundingClientRect().top;
+			if (top < height) contactField.style.transform = 'translate3d(' + (-200 - (height - top) * 0.25).toFixed(1) + 'px, 0, 0)';
+		}
+
+		window.addEventListener('scroll', function () {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(drift);
+			}
+		}, { passive: true });
+		window.addEventListener('resize', drift);
+		drift();
+	})();
+</script>
+
 <style>
+	/* Above the fixed logo field. */
 	.page {
+		position: relative;
+		z-index: 1;
+		padding-top: clamp(2.5rem, 6vw, 5rem);
+	}
+
+	.page > section {
 		width: min(calc(100% - 2rem), var(--content-width));
-		margin: 0 auto;
-		padding: calc(var(--nav-height) + clamp(2rem, 5vw, 4rem)) 0 4rem;
+		margin-inline: auto;
 	}
 
 	.page:focus {
 		outline: none;
+	}
+
+	.nowrap {
+		white-space: nowrap;
 	}
 
 	.visually-hidden {
@@ -207,253 +367,442 @@ import { education, experience, highlights, projects, skills, site } from '../da
 
 	.hero {
 		display: grid;
-		grid-template-columns: minmax(0, 1.55fr) minmax(240px, 0.85fr);
+		grid-template-columns: minmax(0, 1fr) 14rem;
 		grid-template-areas:
-			'content portrait'
-			'highlights highlights';
-		gap: clamp(2rem, 5vw, 4rem);
-		align-items: center;
+			'identity portrait'
+			'statement portrait'
+			'next next';
+		gap: 0 clamp(2.5rem, 6vw, 5rem);
 	}
 
-	.hero__content {
-		grid-area: content;
+	.hero__identity {
+		grid-area: identity;
+		margin: 0 0 1.5rem;
+		font-size: 1.1rem;
+		line-height: 1.35;
 	}
 
-	.hero__role {
-		margin: 0 0 0.75rem;
-		font-size: 1rem;
-		font-weight: 700;
-		color: var(--accent);
+	.hero__identity strong {
+		font-weight: 800;
+	}
+
+	.hero__identity span {
+		color: var(--muted);
 	}
 
 	h1 {
+		grid-area: statement;
 		margin: 0;
-		font-size: clamp(2.75rem, 7vw, 5.25rem);
+		font-size: clamp(2.4rem, 5.4vw, 4.5rem);
 		font-weight: 800;
-		line-height: 0.98;
+		line-height: 1.03;
 		letter-spacing: -0.035em;
+		text-wrap: balance;
 	}
 
-	.lede {
-		max-width: 36rem;
-		margin: 1.5rem 0 0;
-		font-size: clamp(1.1rem, 1.6vw, 1.3rem);
-		line-height: 1.6;
+	.hero__next {
+		grid-area: next;
+	}
+
+	.hero__availability {
+		margin: 1.75rem 0 0;
+		font-size: 1.15rem;
 		color: var(--muted);
+		text-wrap: pretty;
 	}
 
-	.hero__meta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem 1.5rem;
-		margin: 1.5rem 0 0;
-		padding: 0;
-		list-style: none;
-		font-size: 0.95rem;
-		font-weight: 600;
-		color: var(--text);
+	/* The portrait fills the identity and statement rows, so its bottom edge meets the statement's. */
+	.hero :global(.hero__picture) {
+		grid-area: portrait;
+		position: relative;
 	}
 
-	.hero__meta li {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
+	.hero :global(.hero__portrait) {
+		display: block;
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 20%;
+		border-radius: var(--radius-md);
+		outline: 1px solid var(--line);
+		outline-offset: -1px;
+		background: var(--bg-alt);
 	}
 
-	.hero__meta svg {
-		color: var(--muted);
-	}
+	/* Buttons */
 
-	.status-dot {
-		width: 0.55rem;
-		height: 0.55rem;
-		margin: 0 0.1rem;
-		border-radius: 50%;
-		background: #16a34a;
-		box-shadow: 0 0 0 3px color-mix(in srgb, #16a34a 22%, transparent);
-	}
-
-	.hero__actions {
+	.actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
 		margin-top: 2rem;
 	}
 
-	.hero__portrait {
-		grid-area: portrait;
-		margin: 0;
-	}
-
-	.hero__portrait img {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 4 / 5;
-		object-fit: cover;
-		object-position: center 20%;
-		border-radius: var(--radius-xl);
-		background: var(--bg-alt);
-	}
-
-	.highlights {
-		grid-area: highlights;
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 1.5rem;
-		margin: 0;
-		padding: 1.75rem 0 0;
-		border-top: 1px solid var(--line);
-		list-style: none;
-	}
-
-	.highlights strong,
-	.highlights span {
-		display: block;
-	}
-
-	.highlights strong {
-		font-size: 1.05rem;
-		font-weight: 800;
-	}
-
-	.highlights span {
-		margin-top: 0.25rem;
-		color: var(--muted);
-		line-height: 1.5;
-	}
-
-	/* Buttons */
-
 	.button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 2.9rem;
-		padding: 0.75rem 1.35rem;
-		border-radius: 999px;
-		text-decoration: none;
+		min-height: 3rem;
+		padding: 0.5rem 1.4rem;
+		border: 1px solid transparent;
+		border-radius: var(--radius-sm);
 		font-weight: 700;
-		transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
+		text-decoration: none;
+		transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+	}
+
+	.button:active {
+		transform: translateY(1px);
 	}
 
 	.button--primary {
 		background: var(--text);
 		color: var(--bg);
-		border: 1px solid var(--text);
 	}
 
-	.button--primary:hover {
-		background: var(--accent);
-		border-color: var(--accent);
-		color: #ffffff;
-	}
-
-	:global([data-theme="dark"]) .button--primary:hover {
-		color: var(--bg);
-	}
 
 	.button--secondary {
-		border: 1px solid var(--line-strong);
-		background: var(--surface);
+		border-color: var(--line-strong);
 		color: var(--text);
 	}
 
-	.button--secondary:hover {
-		border-color: var(--text);
+	@media (hover: hover) {
+		.button--primary:hover {
+			background: var(--accent);
+			color: var(--on-accent);
+		}
+
+		.button--secondary:hover {
+			border-color: var(--accent);
+			color: var(--accent);
+		}
+
+		.entry__also a:hover,
+		.row__projects a:hover .row__project-name,
+		.contact-meta a:hover {
+			color: var(--accent);
+		}
+
+		.work-switch button:not([aria-pressed="true"]):hover {
+			color: var(--text);
+		}
 	}
 
 	/* Sections */
 
 	.section {
-		padding-top: clamp(4rem, 9vw, 7rem);
+		padding-top: clamp(4.5rem, 10vw, 8rem);
+	}
+
+	/* Tone sections shift the page's ground, so the background changes as the visitor scrolls. */
+
+	.page > .section--tone {
+		--line: var(--line-strong);
+		width: 100%;
+		margin-top: clamp(4.5rem, 10vw, 8rem);
+		padding: clamp(4rem, 8vw, 6.5rem) max(1rem, calc((100% - var(--content-width)) / 2));
+		background: var(--bg-alt);
+	}
+
+	/* With the fade on, the page ground carries the tone instead. Without it these stay sharp bands. */
+	:global(html.fade) .page > .section--tone {
+		margin-top: 0;
+		background: transparent;
+	}
+
+	/* No band to pad out, and the next section brings its own space. */
+	:global(html.fade) .page > #experience {
+		padding-bottom: 0;
 	}
 
 	/* Work */
 
-	.work-list {
-		border-top: 1px solid var(--line);
+	.work-switch {
+		display: inline-flex;
+		gap: 0.25rem;
+		margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+		padding: 0.25rem;
+		border-radius: var(--radius-md);
+		background: var(--bg-alt);
 	}
 
-	.work-item {
-		display: grid;
-		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
-		gap: 1rem clamp(2rem, 5vw, 4rem);
-		padding: 2rem 0;
-		border-bottom: 1px solid var(--line);
+	:global(html:not(.js)) .work-switch {
+		display: none;
 	}
 
-	.work-item__category {
-		margin: 0 0 0.5rem;
-		font-size: 0.85rem;
+	.work-switch button {
+		min-height: 2.75rem;
+		padding: 0 1.1rem;
+		border: 0;
+		border-radius: var(--radius-sm);
+		background: transparent;
+		color: var(--muted);
+		font: inherit;
+		font-size: 0.95rem;
 		font-weight: 700;
-		color: var(--accent);
+		cursor: pointer;
+		transition: background var(--transition-base), color var(--transition-base);
 	}
 
-	.work-item h3 {
+	.work-switch button[aria-pressed="true"] {
+		background: var(--text);
+		color: var(--bg);
+	}
+
+	.work-date {
+		margin: 0 0 clamp(1.75rem, 4vw, 3rem);
+		padding: 0;
+		list-style: none;
+	}
+
+	.date-row {
+		display: grid;
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr);
+		gap: 0.25rem clamp(2rem, 5vw, 4rem);
+		padding: clamp(1.75rem, 4vw, 2.5rem) 0;
+		border-top: 1px solid var(--line-strong);
+	}
+
+	.date-row h3 {
 		margin: 0;
-		font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+		font-size: 1.2rem;
 		font-weight: 800;
-		line-height: 1.2;
-		letter-spacing: -0.01em;
+		line-height: 1.25;
+		letter-spacing: -0.015em;
 	}
 
-	.work-item__role {
-		margin: 0.4rem 0 0;
-		font-weight: 600;
+	.entry .date-row__layer {
+		margin: 1.25rem 0 0;
+		font-size: 0.95rem;
+		letter-spacing: 0;
+	}
+
+	.date-row__layer + .entry__work {
+		margin-top: 0.35rem;
+	}
+
+	.layer {
+		display: grid;
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr);
+		gap: 1.25rem clamp(2rem, 5vw, 4rem);
+		padding: clamp(1.75rem, 4vw, 3rem) 0;
+		border-top: 1px solid var(--line-strong);
+	}
+
+	.layer__header {
+		position: sticky;
+		top: calc(var(--nav-height) + 1.5rem);
+		align-self: start;
+	}
+
+	.layer__header h3 {
+		margin: 0;
+		font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+		font-weight: 800;
+		line-height: 1.15;
+		letter-spacing: -0.025em;
+	}
+
+	.layer__header p {
+		margin: 0.5rem 0 0;
+		color: var(--muted);
+		text-wrap: pretty;
+	}
+
+	.layer__entries {
+		display: grid;
+		gap: clamp(2rem, 4vw, 2.75rem);
+		min-width: 0;
+	}
+
+	.entry {
+		border-radius: 2px;
+	}
+
+	.entry h4 {
+		margin: 0;
+		font-size: 1.2rem;
+		font-weight: 800;
+		line-height: 1.25;
+		letter-spacing: -0.015em;
+	}
+
+	.entry--lead h4 {
+		font-size: clamp(1.4rem, 2.2vw, 1.65rem);
+		letter-spacing: -0.025em;
+	}
+
+	.entry__meta {
+		margin: 0.3rem 0 0;
+		font-size: 0.92rem;
+		font-weight: 500;
 		color: var(--muted);
 	}
 
-	.work-item__summary {
-		margin: 0;
+	.entry__summary {
+		margin: 0.75rem 0 0;
 		font-size: 1.05rem;
-		line-height: 1.65;
+		text-wrap: pretty;
+	}
+
+	.entry__work {
+		display: grid;
+		gap: 0.4rem;
+		max-width: 40rem;
+		margin: 0.75rem 0 0;
+		padding-left: 1.1rem;
+		list-style: disc;
+		color: var(--muted);
+		text-wrap: pretty;
+	}
+
+	.entry__work li::marker {
+		color: var(--accent);
+	}
+
+	.entry__foot {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.25rem;
+		margin: 0.75rem 0 0;
+		font-size: 0.92rem;
+		font-weight: 500;
+		color: var(--muted);
+	}
+
+	.entry__also a {
+		display: inline-block;
+		font-weight: 700;
 		color: var(--text);
 	}
 
-	.work-item__outcomes {
-		display: grid;
-		gap: 0.4rem;
-		margin: 0.9rem 0 0;
-		padding-left: 1.1rem;
-		color: var(--muted);
-		line-height: 1.6;
+	/* Arriving from a link in another layer lights the same project once. */
+	.entry:target {
+		background: var(--accent-soft);
+		box-shadow: 0 0 0 0.6rem var(--accent-soft);
 	}
 
-	.work-item__outcomes li::marker {
-		color: var(--accent);
+	@media (prefers-reduced-motion: no-preference) {
+		.entry:target {
+			background: transparent;
+			box-shadow: 0 0 0 0.6rem transparent;
+			animation: entry-arrive 2.2s var(--ease-out);
+		}
+
+		@keyframes entry-arrive {
+			/* Hold the tint while a long smooth scroll is still landing. */
+			from,
+			38% {
+				background: var(--accent-soft);
+				box-shadow: 0 0 0 0.6rem var(--accent-soft);
+			}
+
+			to {
+				background: transparent;
+				box-shadow: 0 0 0 0.6rem transparent;
+			}
+		}
 	}
 
-	.work-item__stack {
-		margin: 1rem 0 0;
-		font-size: 0.88rem;
-		font-weight: 600;
-		color: var(--muted);
+	.work-cta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--line-strong);
+		border-bottom: 1px solid var(--line-strong);
+	}
+
+	.work-cta p {
+		margin: 0;
+		font-size: clamp(1.15rem, 2vw, 1.4rem);
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		text-wrap: balance;
 	}
 
 	/* Experience */
 
-	.timeline {
-		--timeline-gutter: 2rem;
-		position: relative;
-		padding-left: var(--timeline-gutter);
+	.rows {
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
-	.timeline::before {
-		content: '';
-		position: absolute;
-		top: 0.5rem;
-		bottom: 0.5rem;
-		left: 0;
-		width: 1px;
-		background: var(--line-strong);
+	.row {
+		display: grid;
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr);
+		gap: 0.25rem clamp(2rem, 5vw, 4rem);
+		padding: 1.75rem 0;
+		border-top: 1px solid var(--line);
+	}
+
+	.row__period {
+		margin: 0;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		color: var(--muted);
+	}
+
+	.row h3 {
+		margin: 0;
+		font-size: 1.2rem;
+		font-weight: 800;
+		line-height: 1.3;
+		letter-spacing: -0.015em;
+	}
+
+	.row__title {
+		margin: 0.15rem 0 0;
+		font-weight: 500;
+	}
+
+	.row__summary {
+		max-width: 40rem;
+		margin: 0.6rem 0 0;
+		color: var(--muted);
+		text-wrap: pretty;
+	}
+
+	.row__projects {
+		display: grid;
+		gap: 0.15rem;
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.row__projects a {
+		display: grid;
+		grid-template-columns: 7.5rem minmax(0, 1fr);
+		gap: 0 0.75rem;
+		align-items: baseline;
+		padding: 0.15rem 0;
+		text-decoration: none;
+	}
+
+	.row__project-years {
+		font-size: 0.92rem;
+		font-variant-numeric: tabular-nums;
+		color: var(--muted);
+	}
+
+	.row__project-name {
+		font-weight: 600;
+		color: var(--text);
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
 	}
 
 	/* About */
 
 	.about {
 		display: grid;
-		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr);
 		gap: 0 clamp(2rem, 5vw, 4rem);
 		align-items: start;
 	}
@@ -461,249 +810,314 @@ import { education, experience, highlights, projects, skills, site } from '../da
 	.about__copy {
 		display: grid;
 		gap: 1.25rem;
+		max-width: 40rem;
 	}
 
 	.about__copy p {
 		margin: 0;
-		font-size: 1.08rem;
+		font-size: 1.1rem;
+		line-height: 1.7;
 		color: var(--muted);
-		line-height: 1.8;
+		text-wrap: pretty;
 	}
 
-	/* Skills */
+	/* Skills and education */
 
-	.skill-groups {
-		border-top: 1px solid var(--line);
-	}
-
-	.skill-group {
+	.reference {
 		display: grid;
-		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
-		gap: 0.75rem clamp(2rem, 5vw, 4rem);
-		align-items: center;
-		padding: 1.1rem 0;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+		gap: 2.5rem clamp(2rem, 5vw, 4rem);
+		font-size: 0.95rem;
+	}
+
+	.reference h3 {
+		margin: 0 0 0.9rem;
+		padding-bottom: 0.6rem;
 		border-bottom: 1px solid var(--line);
-	}
-
-	.skill-group__label {
-		margin: 0;
 		font-size: 1rem;
-		font-weight: 700;
-	}
-
-	.tag-cloud {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	/* Education */
-
-	.education-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-		gap: 1rem;
-	}
-
-	.education-card {
-		padding: 1.5rem;
-	}
-
-	.education-card__header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: 1rem;
-		margin-bottom: 0.6rem;
-	}
-
-	.education-card__logo {
-		height: 26px;
-		width: auto;
-		flex-shrink: 0;
-		opacity: 0.8;
-	}
-
-	:global([data-theme="dark"]) .education-card__logo {
-		filter: brightness(0) invert(1);
-	}
-
-	.education-card h3 {
-		margin: 0 0 0.5rem;
-		font-size: 1.2rem;
 		font-weight: 800;
 	}
 
-	.education-card p {
+	.reference__side {
+		display: grid;
+		align-content: start;
+		gap: 2.5rem;
+	}
+
+	.reference__list {
+		display: grid;
+		gap: 0.65rem;
+		margin: 0;
+	}
+
+	.reference__list > div {
+		display: grid;
+		grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr);
+		gap: 0.1rem 1rem;
+	}
+
+	.reference__list--stacked > div {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.reference__list dt {
+		font-weight: 600;
+	}
+
+	.reference__list dd {
 		margin: 0;
 		color: var(--muted);
-		line-height: 1.65;
 	}
 
-	.education-card__period {
-		font-size: 0.85rem;
-		font-weight: 700;
-		color: var(--accent) !important;
+	.reference__text {
+		margin: 0;
+		color: var(--muted);
 	}
 
-	.education-card .education-card__degree {
-		margin-bottom: 0.5rem;
-		font-weight: 700;
+	/* Contact: the page's one full-width colour moment, and its close. */
+
+	.page > .contact {
+		--bg: #0e0e0e;
+		--text: #ffffff;
+		--muted: #b5b5b2;
+		--line-strong: #42423f;
+		--bg-alt: #242423;
+		--accent: #ff7a5c;
+		--on-accent: #0e0e0e;
+		width: 100%;
+		padding: clamp(4rem, 8vw, 6.5rem) max(1rem, calc((100% - var(--content-width)) / 2));
+		background: var(--contact-bg);
 		color: var(--text);
 	}
 
-	/* Contact */
-
-	.contact-card {
-		padding: clamp(1.5rem, 4vw, 2.5rem);
-		background: var(--bg-alt);
-		border-color: transparent;
+	.contact :global(h2) {
+		font-size: clamp(2.4rem, 5.4vw, 4.5rem);
 	}
 
-	.contact-card__actions {
+	.contact__actions {
+		margin-top: 0;
+	}
+
+	/* A row of faint logos along the bottom edge, echoing the hero. */
+	.page > .contact {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.contact > :global(*) {
+		position: relative;
+		z-index: 1;
+	}
+
+	.contact > .contact-field {
+		position: absolute;
+		left: 0;
+		bottom: clamp(-3rem, -3vw, -1.5rem);
+		z-index: 0;
 		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 0.75rem;
+		gap: clamp(3rem, 7vw, 7rem);
+		width: max-content;
+		color: #ffffff;
+		opacity: 0.07;
+		pointer-events: none;
+		transform: translate3d(-200px, 0, 0);
+		will-change: transform;
+	}
+
+	.contact-field svg {
+		flex: none;
+		width: clamp(5rem, 11vw, 10rem);
+		height: clamp(5rem, 11vw, 10rem);
+		fill: currentColor;
 	}
 
 	.contact-meta {
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 1.5rem 3rem;
-		margin: 1.75rem 0 0;
-		padding-top: 1.75rem;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1.5rem clamp(2rem, 5vw, 4rem);
+		margin: 3rem 0 0;
+		padding-top: 1.5rem;
 		border-top: 1px solid var(--line-strong);
-		text-align: center;
 	}
 
-	dt {
-		font-size: 0.78rem;
+	.contact-meta dt {
 		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		color: var(--accent);
 	}
 
-	dd {
-		margin: 0.4rem 0 0;
+	.contact-meta dd {
+		margin: 0.2rem 0 0;
+		color: var(--muted);
 		overflow-wrap: anywhere;
 	}
 
-	/* Entrance animation (skipped entirely for reduced motion) */
-
-	@media (prefers-reduced-motion: no-preference) {
-		main > section {
-			animation: section-enter 0.6s ease-out both;
-		}
-
-		main > section:nth-of-type(2) {
-			animation-delay: 0.08s;
-		}
-
-		main > section:nth-of-type(n + 3) {
-			animation-delay: 0.14s;
-		}
-
-		@keyframes section-enter {
-			from {
-				opacity: 0;
-				transform: translateY(10px);
-			}
-
-			to {
-				opacity: 1;
-				transform: none;
-			}
-		}
+	.contact-meta a {
+		color: var(--text);
+		font-weight: 600;
 	}
 
 	/* Responsive */
 
-	@media (max-width: 760px) {
-		.hero {
-			grid-template-columns: minmax(0, 1fr);
-			grid-template-areas:
-				'portrait'
-				'content'
-				'highlights';
-			gap: 2rem;
-		}
-
-		.hero__portrait {
-			width: 7.5rem;
-		}
-
-		.hero__portrait img {
-			aspect-ratio: 1;
-			border-radius: 50%;
-		}
-
-		.highlights,
-		.work-item,
+	@media (max-width: 860px) {
+		.layer,
+		.row,
+		.date-row,
 		.about,
-		.skill-group {
-			grid-template-columns: 1fr;
+		.reference {
+			grid-template-columns: minmax(0, 1fr);
 		}
 
-		.highlights {
-			gap: 1rem;
+		/* The layer name stays pinned so a jump between layers always lands with its context. */
+		.layer {
+			display: block;
 		}
 
-		.work-item {
-			padding: 1.75rem 0;
+		.layer__header {
+			display: contents;
 		}
 
-		.timeline {
-			--timeline-gutter: 1.5rem;
+		.layer__header h3 {
+			position: sticky;
+			top: var(--nav-height);
+			z-index: 1;
+			padding: 0.5rem 0;
+			background: var(--ground);
+			font-size: 1.9rem;
 		}
-	}
 
-	@media (max-width: 480px) {
-		.button {
-			flex: 1 1 auto;
+		:global(html.fade) .layer__header h3 {
+			transition: background-color var(--transition-ground);
+		}
+
+		.layer__header p {
+			margin-bottom: 1.5rem;
+		}
+
+		.entry {
+			scroll-margin-top: 2.7rem;
+		}
+
+		.entry__foot {
+			flex-direction: column;
+		}
+
+		.row__projects a {
+			grid-template-columns: minmax(0, 1fr);
+			align-content: center;
+			min-height: 3.25rem;
+			padding: 0.25rem 0;
+			line-height: 1.35;
 		}
 
 		.contact-meta {
-			flex-direction: column;
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	@media (max-width: 760px) {
+		.hero {
+			grid-template-columns: 4.5rem minmax(0, 1fr);
+			grid-template-rows: auto;
+			grid-template-areas:
+				'portrait identity'
+				'statement statement'
+				'next next';
+			gap: 0 1rem;
+		}
+
+		.hero__identity {
+			align-self: center;
+			margin: 0;
+		}
+
+		.hero__identity strong,
+		.hero__identity span {
+			display: block;
+		}
+
+		h1 {
+			margin-top: 1.5rem;
+		}
+
+		.hero :global(.hero__portrait) {
+			position: static;
+			height: auto;
+			aspect-ratio: 1;
+			border-radius: 50%;
+		}
+	}
+
+	@media (max-height: 480px) {
+		.layer__header h3 {
+			position: static;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.actions .button {
+			flex: 1 1 calc(50% - 0.75rem);
+		}
+
+		.actions .button--primary {
+			flex-basis: 100%;
+		}
+
+		.work-cta .button {
+			width: 100%;
 		}
 	}
 
 	@media print {
-		:global(.site-nav),
-		:global(.skip-link) {
-			display: none !important;
-		}
-
 		.page {
-			width: 100%;
 			padding: 0;
 		}
 
-		.hero__portrait {
+		.page > section {
+			width: 100%;
+		}
+
+		.hero :global(.hero__picture),
+		.actions,
+		.work-cta,
+		.entry__also {
 			display: none;
 		}
 
 		.hero {
 			grid-template-columns: 1fr;
-			grid-template-areas: 'content' 'highlights';
+			grid-template-areas: 'identity' 'statement' 'next';
 		}
 
-		.work-item,
-		.education-card,
-		.contact-card {
+		.layer__header,
+		.layer__header h3 {
+			position: static;
+		}
+
+		.section {
+			padding-top: 2rem;
+		}
+
+		.entry,
+		.row {
 			break-inside: avoid;
 		}
 
-		.timeline::before {
-			display: none;
+		:global(html) .page > .section--tone {
+			padding-inline: 0;
+			background: none;
 		}
 
-		.button {
-			border: 1px solid #999;
-			color: #000;
-			background: #fff;
+		.page > .contact {
+			--text: #000000;
+			--muted: #333333;
+			--line-strong: #999999;
+			background: none;
+			padding-inline: 0;
+		}
+
+		.work-switch,
+		.row__projects,
+		.contact > .contact-field {
+			display: none;
 		}
 	}
 </style>
