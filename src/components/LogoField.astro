@@ -30,10 +30,13 @@ const rows = [0, 3, 6].map((start) => {
 		var offsets = [-120, -900, -420];
 		var ticking = false;
 
-		// The field drifts behind the hero and is gone by the time the band's lower edge reaches mid-screen,
-		// so it never sits behind the Work text.
+		// The field drifts behind the hero and is gone by the time the band's lower edge reaches mid-screen.
+		// It is also clipped at the band's lower edge, so it never sits behind the Work text, even on tall
+		// screens or when the page opens part-way down (anchor links, restored scroll).
 		function draw() {
 			ticking = false;
+			var below = Math.max(0, window.innerHeight - band.getBoundingClientRect().bottom);
+			field.style.clipPath = 'inset(0 0 ' + below.toFixed(1) + 'px 0)';
 			var gone = band.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.6;
 			var visible = Math.min(1, Math.max(0, 1 - window.scrollY / Math.max(gone, 1)));
 			field.style.setProperty('--field-visible', visible.toFixed(3));
@@ -50,6 +53,9 @@ const rows = [0, 3, 6].map((start) => {
 			}
 		}, { passive: true });
 		window.addEventListener('resize', draw);
+		window.addEventListener('load', draw);
+		window.addEventListener('pageshow', draw);
+		window.addEventListener('hashchange', draw);
 		draw();
 	})();
 </script>
